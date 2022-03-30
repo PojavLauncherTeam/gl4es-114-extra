@@ -1,0 +1,18 @@
+name: Build gl4es-114
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build GL4ES
+        run: |
+        wget https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip
+        unzip android-ndk-r16b-linux-x86_64.zip
+        ./android-ndk-r16b/ndk-build APP_BUILD_SCRIPT=./Android.mk
+      - name: Upload GL4ES libs
+        uses: actions/upload-artifact@v2
+        with:
+          name: gl4es-114
+          path: lib/
+        
