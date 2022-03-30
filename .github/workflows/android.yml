@@ -8,8 +8,8 @@ jobs:
       - name: Build GL4ES
         run: |
          wget https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip
-         unzip android-ndk-r16b-linux-x86_64.zip
-         ./android-ndk-r16b/ndk-build APP_BUILD_SCRIPT=./Android.mk
+         unzip android-ndk-r16b-linux-x86_64.zip >> /dev/null
+         ./android-ndk-r16b/ndk-build APP_BUILD_SCRIPT=./Android.mk NDK_PROJECT_PATH=.
       - name: Upload GL4ES libs
         uses: actions/upload-artifact@v2
         with:
