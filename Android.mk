@@ -97,5 +97,4 @@ LOCAL_CFLAGS += -DNO_GBM
 LOCAL_LDLIBS := -ldl -llog
 #building as a static lib
 
-LOCAL_CFLAGS += -DSTATICLIB
-include $(BUILD_STATIC_LIBRARY)
+include $(BUILD_SHARED_LIBRARY)
