@@ -918,6 +918,8 @@ void *gl4es_GetProcAddress(const char *name) {
     _EXT(glVertexAttrib4f);
     _EXT(glVertexAttrib4fv);
     _EXT(glVertexAttribPointer);
+    _EXT(glVertexAttribIPointer);
+    _EX(glVertexAttribIPointer);
     _EXT(glVertexPointer);
     _EXT(glProgramUniform1f);
     _EXT(glProgramUniform2f);

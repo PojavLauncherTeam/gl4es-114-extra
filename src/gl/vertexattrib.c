@@ -43,6 +43,14 @@ void gl4es_glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolea
         v->real_pointer = 0;
     }
 }
+void gl4es_glVertexAttribIPointer(GLuint index, GLint size, GLenum type, GLsizei stride, const GLvoid * pointer) {
+	DBG(printf("glVertexAttribIPointer(%d, %d, %s, %d, %p)\n", index, size, PrintEnum(type), stride, pointer));
+	if(!(type == GL_BYTE || type == GL_UNSIGNED_BYTE || type == GL_SHORT || type == GL_UNSIGNED_SHORT || type == GL_INT || type == GL_UNSIGNED_INT)) {
+		errorShim(GL_INVALID_ENUM);
+		return;
+	}
+	gl4es_glVertexAttribPointer(index,size,type,GL_FALSE,stride,pointer);
+}
 void gl4es_glEnableVertexAttribArray(GLuint index) {
     DBG(printf("glEnableVertexAttrib(%d)\n", index);)
     FLUSH_BEGINEND;
@@ -161,6 +169,8 @@ void gl4es_glVertexAttribDivisor(GLuint index, GLuint divisor) {
 }
 
 void glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid * pointer) AliasExport("gl4es_glVertexAttribPointer");
+void glVertexAttribIPointer(GLuint index, GLint size, GLenum type, GLsizei stride, const GLvoid * pointer) AliasExport("gl4es_glVertexAttribIPointer");
+void glVertexAttribIPointerEXT(GLuint index, GLint size, GLenum type, GLsizei stride, const GLvoid * pointer) AliasExport("gl4es_glVertexAttribIPointer");
 void glEnableVertexAttribArray(GLuint index) AliasExport("gl4es_glEnableVertexAttribArray");
 void glDisableVertexAttribArray(GLuint index) AliasExport("gl4es_glDisableVertexAttribArray");
 void glVertexAttrib4f(GLuint index, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) AliasExport("gl4es_glVertexAttrib4f");

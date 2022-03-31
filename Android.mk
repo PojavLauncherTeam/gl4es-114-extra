@@ -8,7 +8,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := GL
+LOCAL_MODULE := gl4es_114
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 
