@@ -30,6 +30,33 @@ char* InplaceReplace(char* pBuffer, int* size, const char* S, const char* D)
     return pBuffer;
 }
 
+char * InplaceReplaceByIndex(char* pBuffer, int* size, const int startIndex, const int endIndex, const char* replacement)
+{
+    //SHUT_LOGD("BY INDEX: %s", replacement);
+    //SHUT_LOGD("BY INDEX: %i", strlen(replacement));
+
+    int length_difference;
+    if(endIndex < startIndex)
+        length_difference = strlen(replacement) + (endIndex - startIndex);
+    else if(endIndex == startIndex)
+        length_difference = strlen(replacement) - 1; // The initial char gets replaced
+    else
+        length_difference = strlen(replacement) - (endIndex - startIndex); // Can be negative if repl is smaller
+
+    pBuffer = ResizeIfNeeded(pBuffer, size, length_difference);
+    //SHUT_LOGD("BEFORE MOVING: \n%s", pBuffer);
+    // Move the end of the string
+    memmove(pBuffer + startIndex + strlen(replacement) , pBuffer + endIndex + 1, strlen(pBuffer) - endIndex + 1);
+    //SHUT_LOGD("AFTER MOVING 1: \n%s", pBuffer);
+
+    // Insert the replacement
+    memcpy(pBuffer + startIndex, replacement, strlen(replacement));
+    //strncpy(pBuffer + startIndex, replacement, strlen(replacement));
+    //SHUT_LOGD("AFTER MOVING 2: \n%s", pBuffer);
+
+    return pBuffer;
+}
+
 char* InplaceInsert(char* pBuffer, const char* S, char* master, int* size)
 {
     char* m = ResizeIfNeeded(master, size, strlen(S));
@@ -158,6 +185,15 @@ int isBlank(char c)  {
             return 0;
     }
 }
+
+int isDigit(char value){
+    return (value >= '0' && value <= '9');
+}
+
+int isValidFunctionName(char value){
+    return ((value >= 'a' && value <= 'z') || (value >= 'A' && value <= 'Z') || (value == '_'));
+}
+
 char* StrNext(char *pBuffer, const char* S) {
     if(!pBuffer) return NULL;
     char *p = strstr(pBuffer, S);

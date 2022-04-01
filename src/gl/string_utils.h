@@ -3,11 +3,15 @@
 
 extern const char* AllSeparators;
 
+int isDigit(char value);
+int isValidFunctionName(char value);
+
 const char* FindString(const char* pBuffer, const char* S);
 char* FindStringNC(char* pBuffer, const char* S);
 int CountString(const char* pBuffer, const char* S);
 char* ResizeIfNeeded(char* pBuffer, int *size, int addsize);
 char* InplaceReplace(char* pBuffer, int* size, const char* S, const char* D);
+char * InplaceReplaceByIndex(char* pBuffer, int* size, int startIndex, int endIndex, const char* replacement);
 char* Append(char* pBuffer, int* size, const char* S);
 char* InplaceInsert(char* pBuffer, const char* S, char* master, int* size);
 char* GetLine(char* pBuffer, int num);

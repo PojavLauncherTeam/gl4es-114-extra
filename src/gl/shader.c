@@ -7,6 +7,7 @@
 #include "glstate.h"
 #include "loader.h"
 #include "shaderconv.h"
+#include "vgpu/shaderconv.h"
 
 //#define DEBUG
 #ifdef DEBUG
@@ -174,10 +175,14 @@ void gl4es_glShaderSource(GLuint shader, GLsizei count, const GLchar * const *st
     LOAD_GLES2(glShaderSource);
     if (gles_glShaderSource) {
         // adapt shader if needed (i.e. not an es2 context and shader is not #version 100)
+        SHUT_LOGD("Source shader: \n%s", glshader->source);
         if(glstate->glsl->es2 && !strncmp(glshader->source, "#version 100", 12))
             glshader->converted = strdup(glshader->source);
-        else
-            glshader->converted = ConvertShader(glshader->source, glshader->type==GL_VERTEX_SHADER?1:0, &glshader->need);
+        else{
+            glshader->converted = ConvertShader(glshader->source, glshader->type == GL_VERTEX_SHADER ? 1 : 0,&glshader->need);
+            glshader->converted = ConvertShaderVgpu(glshader);
+        }
+
         // send source to GLES2 hardware if any
         gles_glShaderSource(shader, 1, (const GLchar * const*)((glshader->converted)?(&glshader->converted):(&glshader->source)), NULL);
         errorGL();
@@ -233,6 +238,7 @@ void redoShader(GLuint shader, shaderconv_need_t *need) {
     free(glshader->converted);
     memcpy(&glshader->need, need, sizeof(shaderconv_need_t));
     glshader->converted = ConvertShader(glshader->source, glshader->type==GL_VERTEX_SHADER?1:0, &glshader->need);
+    glshader->converted = ConvertShaderVgpu(glshader);
     // send source to GLES2 hardware if any
     gles_glShaderSource(shader, 1, (const GLchar * const*)((glshader->converted)?(&glshader->converted):(&glshader->source)), NULL);
     // recompile...
