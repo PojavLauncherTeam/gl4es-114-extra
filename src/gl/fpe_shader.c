@@ -740,10 +740,11 @@ const char* const* fpe_VertexShader(shaderconv_need_t* need, fpe_state_t *state)
             strcat(buff, "normal = normalize(normal);\n");
 #else
 // Implementions may choose to normalize for rescale...
-        if(state->rescaling || state->normalize)
+//TODO deal better with rescale ?
+        //if(state->rescaling || state->normalize)
             strcpy(buff, "vec3 normal = normalize(gl_NormalMatrix * gl_Normal);\n");
-        else
-            strcpy(buff, "vec3 normal = gl_NormalMatrix * gl_Normal;\n");
+        //else
+            //strcpy(buff, "vec3 normal = gl_NormalMatrix * gl_Normal;\n");
 #endif
         shad = InplaceInsert(GetLine(shad, normal_line + headers), buff, shad, &shad_cap);
     }
