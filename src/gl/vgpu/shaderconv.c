@@ -26,6 +26,13 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
     char * source = shader_source->converted;
     int sourceLength = strlen(source);
 
+    // TODO Deal with lower versions ?
+    // For now, skip stuff
+    if(FindString(source, "#version 100")){
+        SHUT_LOGD("OLD VERSION, SKIPPING !");
+        return source;
+    }
+
 
     // Remove 'const' storage qualifier
     //SHUT_LOGD("REMOVING CONST qualifiers");
