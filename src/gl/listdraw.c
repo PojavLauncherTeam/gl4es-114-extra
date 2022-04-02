@@ -741,7 +741,7 @@ void draw_renderlist(renderlist_t *list) {
                         LOAD_GLES2(glBufferData);
                         gles_glGenBuffers(1, &list->vbo_indices);
                         gles_glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, list->vbo_indices);
-                        gles_glBufferData(GL_ELEMENT_ARRAY_BUFFER, list->ilen*sizeof(GL_UNSIGNED_SHORT), indices, GL_STATIC_DRAW);
+                        gles_glBufferData(GL_ELEMENT_ARRAY_BUFFER, list->ilen*sizeof(GLushort), indices, GL_STATIC_DRAW);
                         use_vbo_indices = 2;
                         vbo_indices = 1;
                     } else if(use_vbo_indices==2) {
