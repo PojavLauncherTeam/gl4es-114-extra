@@ -223,7 +223,7 @@ eTokenType NextToken(char **p, uToken *tok) {
                             (*p)++; nextc=**p;
                         }
                         while(nextc>='0' && nextc<='9') { nb=nb*10+nextc-'0'; (*p)++; nextc=**p;}
-                        fnb=powf(fnb, nb*expsign);
+                        fnb *= powf(10, nb*expsign); // exp10f is a GNU extension
                     }
                     if(nextc=='f') {
                         (*p)++; nextc=**p;
@@ -231,7 +231,7 @@ eTokenType NextToken(char **p, uToken *tok) {
                     fnb*=isneg;
                     tok->type = TK_FLOAT;
                     tok->real = fnb;
-                    sprintf(tok->str, "%f", fnb);
+                    sprintf(tok->str, "%#g", fnb);
                 } else {
                     tok->type = TK_INT;
                     tok->integer = nb;
@@ -520,15 +520,13 @@ char* preproc(const char* code, int keepcomments, int gl_es, extensions_t* exts,
                     if(tok.type==TK_SPACE)
                         status = 310;
                     else if(tok.type==TK_TEXT) {
-                        int v;
+                        int v = -1;
                         if(gl_es && (strcmp(tok.str, "GL_ES")==0))
                             v = 1;
                         else if(kh_get(alldefine, alldefines, tok.str)!=kh_end(alldefines)) {
                             v = 0;
                         } else if (strncmp(tok.str, "GL_", 3)==0)
                             v = -1;
-                        else 
-                            v = 1;
                         push_if(&stackif, v);
                         nowrite_ifs = result_if(&stackif);
                         if(nowrite_ifs!=-1) {
@@ -543,15 +541,13 @@ char* preproc(const char* code, int keepcomments, int gl_es, extensions_t* exts,
                     if(tok.type==TK_SPACE)
                         status = 320;
                     else if(tok.type==TK_TEXT) {
-                        int v;
+                        int v = -1;
                         if(gl_es && strcmp(tok.str, "GL_ES")==0)
                             v = 0;
                         else if(kh_get(alldefine, alldefines, tok.str)!=kh_end(alldefines)) {
                             v = 1;
                         } else if (strncmp(tok.str, "GL_", 3)==0)
                             v = -1;
-                        else 
-                            v = 0;
                         push_if(&stackif, v);
                         nowrite_ifs = result_if(&stackif);
                         if(nowrite_ifs!=-1) {
@@ -734,6 +730,16 @@ char* preproc(const char* code, int keepcomments, int gl_es, extensions_t* exts,
                     } else if(tok.type==TK_TEXT) {
                         strncat(*versionString, tok.str, 50);
                         status = 820;
+                    } else if(tok.type==TK_INT) {
+                        char buff[20] = {0};
+                        sprintf(buff, "%d", tok.integer);
+                        strncat(*versionString, buff, 50);
+                        status = 820;
+                    } else if(tok.type==TK_FLOAT) {
+                        char buff[20] = {0};
+                        sprintf(buff, "%g", tok.real);
+                        strncat(*versionString, buff, 50);
+                        status = 820;
                     } else {
                         status = 399; // fallback, syntax error...
                     }
@@ -744,6 +750,17 @@ char* preproc(const char* code, int keepcomments, int gl_es, extensions_t* exts,
                         status = 830;
                     } else if(tok.type==TK_TEXT) {
                         strncat(*versionString, tok.str, 50);
+                    } else if(tok.type==TK_INT) {
+                        char buff[20] = {0};
+                        sprintf(buff, "%d", tok.integer);
+                        strncat(*versionString, buff, 50);
+                    } else if(tok.type==TK_FLOAT) {
+                        char buff[20] = {0};
+                        sprintf(buff, "%g", tok.real);
+                        strncat(*versionString, buff, 50);
+                    } else if(tok.type==TK_NEWLINE) {
+                        oldp = NULL;
+                        status = 0;
                     } else {
                         status = 399; // fallback, syntax error...
                     }
@@ -754,6 +771,19 @@ char* preproc(const char* code, int keepcomments, int gl_es, extensions_t* exts,
                     } else if(tok.type==TK_TEXT) {
                         strncat(*versionString, tok.str, 50);
                         status = 820;
+                    } else if(tok.type==TK_INT) {
+                        char buff[20] = {0};
+                        sprintf(buff, "%d", tok.integer);
+                        strncat(*versionString, buff, 50);
+                        status = 820;
+                    } else if(tok.type==TK_FLOAT) {
+                        char buff[20] = {0};
+                        sprintf(buff, "%g", tok.real);
+                        strncat(*versionString, buff, 50);
+                        status = 820;
+                    } else if(tok.type==TK_NEWLINE) {
+                        oldp = NULL;
+                        status = 0;
                     } else {
                         status = 399; // fallback, syntax error...
                     }

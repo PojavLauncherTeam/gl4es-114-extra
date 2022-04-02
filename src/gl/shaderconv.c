@@ -278,9 +278,9 @@ static const char* gl_TexMatrixSources[] = {
 static const char* GLESHeader[] = {
   "#version 100\n%sprecision %s float;\nprecision %s int;\n",
   "#version 120\n%sprecision %s float;\nprecision %s int;\n",
-  "#version 310es\n%sprecision %s float;\nprecision %s int;\n",
-  "#version 300es\n%sprecision %s float;\nprecision %s int;\n",
-  "#version 320es\n%sprecision %s float;\nprecision %s int;\n"
+  "#version 310 es\n%sprecision %s float;\nprecision %s int;\n",
+  "#version 300 es\n%sprecision %s float;\nprecision %s int;\n",
+  "#version 320 es\n%sprecision %s float;\nprecision %s int;\n"
 };
 
 static const char* gl4es_transpose =
@@ -484,7 +484,7 @@ char* ConvertShader(const char* pEntry, int isVertex, shaderconv_need_t *need)
   int wanthighp = !fpeShader;
   if(wanthighp && !hardext.highp) wanthighp = 0;
   int versionHeader = 0;
-  SHUT_LOGD("version string: %s", &versionString);
+  SHUT_LOGD("version string: %s", versionString);
   if(versionString && (strcmp(versionString, "120")==0 || strcmp(versionString, "150")==0))
      version120 = 1;
   if(version120) {
