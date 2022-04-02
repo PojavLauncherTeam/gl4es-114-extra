@@ -14,5 +14,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: gl4es-114
-          path: lib/
+          path: libs/*
         
