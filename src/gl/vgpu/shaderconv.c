@@ -21,10 +21,10 @@ int NO_OPERATOR_VALUE = 9999;
  * @param source The start of the shader as a string*/
 char * ConvertShaderVgpu(struct shader_s * shader_source){
 
-    SHUT_LOGD("VGPU BEGIN: \n%s", shader_source->converted);
+    printf("VGPU BEGIN: \n%s", shader_source->converted);
     // Get the shader source
     char * source = shader_source->converted;
-    int sourceLength = strlen(source);
+    int sourceLength = strlen(source) + 1;
 
     // TODO Deal with lower versions ?
     // For now, skip stuff
