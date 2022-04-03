@@ -383,19 +383,7 @@ void GetHardwareExtensions(int notest)
         if(hardext.aniso)
             SHUT_LOGD("Max Anisotropic filtering: %d\n", hardext.aniso);
     }
-    if(hardext.drawbuffers) {
-        gles_glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS_EXT,&hardext.maxcolorattach);
-        gles_glGetIntegerv(GL_MAX_DRAW_BUFFERS_ARB, &hardext.maxdrawbuffers);
-    }
-    if(hardext.maxcolorattach<1)
-        hardext.maxcolorattach = 1;
-    if(hardext.maxcolorattach>MAX_DRAW_BUFFERS)
-        hardext.maxcolorattach=MAX_DRAW_BUFFERS;
-    if(hardext.maxdrawbuffers<1)
-        hardext.maxdrawbuffers = 1;
-    if(hardext.maxdrawbuffers>MAX_DRAW_BUFFERS)
-        hardext.maxdrawbuffers=MAX_DRAW_BUFFERS;
-    SHUT_LOGD("Max Color Attachments: %d / Draw buffers: %d\n", hardext.maxdrawbuffers, hardext.maxcolorattach);
+    
     // get GLES driver signatures...
     const char* vendor = gles_glGetString(GL_VENDOR);
     SHUT_LOGD("Hardware vendor is %s\n", vendor);
@@ -419,15 +407,31 @@ void GetHardwareExtensions(int notest)
     }
     if(hardext.glsl300es) {
         SHUT_LOGD("GLSL 300 es supported%s\n", (hardext.glsl120||hardext.glsl310es)?"":" and used");
+	    hardext.drawbuffers = 1;
     }
     if(hardext.glsl310es) {
         SHUT_LOGD("GLSL 310 es supported%s\n", hardext.glsl120?"":" and used");
+	    hardext.drawbuffers = 1;
     }
     // VGPU SPECIFIC
     if(hardext.glsl320es) {
         SHUT_LOGD("GLSL 320 es supported%s\n", hardext.glsl320es?"":" and used");
+	    hardext.drawbuffers = 1;
     }
-
+	
+    if(hardext.drawbuffers) {
+        gles_glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS_EXT,&hardext.maxcolorattach);
+        gles_glGetIntegerv(GL_MAX_DRAW_BUFFERS_ARB, &hardext.maxdrawbuffers);
+    }
+    if(hardext.maxcolorattach<1)
+        hardext.maxcolorattach = 1;
+    if(hardext.maxcolorattach>MAX_DRAW_BUFFERS)
+        hardext.maxcolorattach=MAX_DRAW_BUFFERS;
+    if(hardext.maxdrawbuffers<1)
+        hardext.maxdrawbuffers = 1;
+    if(hardext.maxdrawbuffers>MAX_DRAW_BUFFERS)
+        hardext.maxdrawbuffers=MAX_DRAW_BUFFERS;
+    SHUT_LOGD("Max Color Attachments: %d / Draw buffers: %d\n", hardext.maxdrawbuffers, hardext.maxcolorattach);
 #ifndef NOEGL
     if(strstr(egl_eglQueryString(eglDisplay, EGL_EXTENSIONS), "EGL_KHR_gl_colorspace")) {
         SHUT_LOGD("sRGB surface supported\n");
