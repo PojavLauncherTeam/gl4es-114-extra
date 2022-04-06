@@ -89,7 +89,7 @@ LOCAL_SRC_FILES := \
 	src/glx/streaming.c \
 	src/gl/vgpu/shaderconv.c\
 
-LOCAL_CFLAGS += -g -std=c99 -funwind-tables -O3 -fvisibility=hidden -include include/android_debug.h
+LOCAL_CFLAGS += -g -std=gnu99 -funwind-tables -O3 -fvisibility=hidden -include include/android_debug.h
 LOCAL_CFLAGS += -DNOX11
 LOCAL_CFLAGS += -DNO_GBM
 #LOCAL_CFLAGS += -DNO_INIT_CONSTRUCTOR
