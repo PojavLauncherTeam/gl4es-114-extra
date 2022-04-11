@@ -80,6 +80,9 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
     // Since everything is a float, we need to overload WAY TOO MANY functions
     source = WrapIvecFunctions(source, &sourceLength);
 
+    SHUT_LOGD("REMOVING DUBIOUS DEFINES");
+    source = InplaceReplaceSimple(source, &sourceLength, "#define texture texture2D", "\n");
+
     // Draw buffers aren't dealt the same on OPEN GL|ES
     if(shader_source->type == GL_FRAGMENT_SHADER && doesShaderVersionContainsES(source) ){
         SHUT_LOGD("REPLACING FRAG DATA");
