@@ -33,6 +33,14 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
         return source;
     }
 
+    // Don't try to convert the shader if it's already GLES
+    // Just let my rice-fueled conversion work, bruh
+    // The one above has already done a part of this work...
+    if(doesShaderVersionContainsES(source) == 1){
+        SHUT_LOGD("DETECTED ESSL >= 300, NOT TRYING TO CONVERT !");
+        return source;
+    }
+
 
     // Remove 'const' storage qualifier
     //SHUT_LOGD("REMOVING CONST qualifiers");
