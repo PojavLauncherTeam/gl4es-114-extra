@@ -8,7 +8,7 @@
 #include <stdarg.h>
 #include <android/log.h>
 
-#define printf(...) __android_log_print(ANDROID_LOG_INFO, "LIBGL", __VA_ARGS__)
+//#define printf(...) __android_log_print(ANDROID_LOG_INFO, "LIBGL", __VA_ARGS__)
 
 #endif
 

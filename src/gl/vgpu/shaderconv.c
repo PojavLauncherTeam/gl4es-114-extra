@@ -29,68 +29,68 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
     // TODO Deal with lower versions ?
     // For now, skip stuff
     if(FindString(source, "#version 100")){
-        SHUT_LOGD("OLD VERSION, SKIPPING !");
+        printf("OLD VERSION, SKIPPING !");
         return source;
     }
 
 
     // Remove 'const' storage qualifier
-    //SHUT_LOGD("REMOVING CONST qualifiers");
+    //printf("REMOVING CONST qualifiers");
     //source = RemoveConstInsideBlocks(source, &sourceLength);
     //source = ReplaceVariableName(source, &sourceLength, "const", " ");
 
 
-    //SHUT_LOGD("FUCKING UP PRECISION");
-    //source = ReplaceVariableName(source, &sourceLength, "highp", "lowp");
+    //printf("FUCKING UP PRECISION");
+    source = ReplaceVariableName(source, &sourceLength, "highp", "mediump");
     //source = ReplaceVariableName(source, &sourceLength, "mediump", "lowp");
 
     // Avoid keyword clash with gl4es #define blocks
-    SHUT_LOGD("REPLACING KEYWORDS");
+    printf("REPLACING KEYWORDS");
     //source = ReplaceVariableName(source, "texture", "vgpu_Texture");
     source = ReplaceVariableName(source, &sourceLength, "sample", "vgpu_Sample");
 
-    SHUT_LOGD("REMOVING \" CHARS ");
+    printf("REMOVING \" CHARS ");
     // " not really supported here
     source = InplaceReplaceSimple(source, &sourceLength, "\"", "");
 
     // For now let's hope no extensions are used
     // TODO deal with extensions but properly
-    SHUT_LOGD("REMOVING EXTENSIONS");
-    source = RemoveUnsupportedExtensions(source);
+    //printf("REMOVING EXTENSIONS");
+    //source = RemoveUnsupportedExtensions(source);
 
     // OpenGL natively supports non const global initializers, not OPENGL ES except if we add an extension
-    SHUT_LOGD("ADDING EXTENSIONS\n");
+    printf("ADDING EXTENSIONS\n");
     int insertPoint = FindPositionAfterDirectives(source);
-    SHUT_LOGD("INSERT POINT: %i\n", insertPoint);
+    printf("INSERT POINT: %i\n", insertPoint);
     source = InplaceReplaceByIndex(source, &sourceLength, insertPoint, insertPoint-1, "\n#extension GL_EXT_shader_non_constant_global_initializers : enable\n");
 
-    SHUT_LOGD("REPLACING mod OPERATORS");
+    printf("REPLACING mod OPERATORS");
     // No support for % operator, so we replace it
     source = ReplaceModOperator(source, &sourceLength);
 
-    SHUT_LOGD("COERCING INT TO FLOATS");
+    printf("COERCING INT TO FLOATS");
     // Hey we don't want to deal with implicit type stuff
     source = CoerceIntToFloat(source, &sourceLength);
 
-    SHUT_LOGD("FIXING ARRAY ACCESS");
+    printf("FIXING ARRAY ACCESS");
     // Avoid any weird type trying to be an index for an array
     source = ForceIntegerArrayAccess(source, &sourceLength);
 
-    SHUT_LOGD("WRAPPING FUNCTION");
+    printf("WRAPPING FUNCTION");
     // Since everything is a float, we need to overload WAY TOO MANY functions
     source = WrapIvecFunctions(source, &sourceLength);
 
-    SHUT_LOGD("REMOVING DUBIOUS DEFINES");
+    printf("REMOVING DUBIOUS DEFINES");
     source = InplaceReplaceSimple(source, &sourceLength, "#define texture texture2D", "\n");
 
     // Draw buffers aren't dealt the same on OPEN GL|ES
     if(shader_source->type == GL_FRAGMENT_SHADER && doesShaderVersionContainsES(source) ){
-        SHUT_LOGD("REPLACING FRAG DATA");
+        printf("REPLACING FRAG DATA");
         source = ReplaceGLFragData(source, &sourceLength);
-        SHUT_LOGD("REPLACING FRAG COLOR");
+        printf("REPLACING FRAG COLOR");
         source = ReplaceGLFragColor(source, &sourceLength);
     }
-    SHUT_LOGD("VGPU END: \n%s", source);
+    printf("VGPU END: \n%s", source);
     return source;
 }
 
@@ -140,7 +140,7 @@ char * WrapFunction(char * source, int * sourceLength, char * functionName, char
         int insertPoint = FindPositionAfterDirectives(source);
         source = InplaceReplaceSimple(source, sourceLength, functionName, wrapperFunctionName);
         source = InplaceReplaceByIndex(source, sourceLength, insertPoint, insertPoint-1, wrapperFunction);
-        //SHUT_LOGD("WHAT THE FUCK IS BROKEN TIMES TWO : \n%s", wrapperFunction);
+        //printf("WHAT THE FUCK IS BROKEN TIMES TWO : \n%s", wrapperFunction);
     }
     return source;
 }
