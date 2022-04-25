@@ -102,7 +102,12 @@ int doesShaderVersionContainsES(const char * source){
 }
 
 char * WrapIvecFunctions(char * source, int * sourceLength){
-    source = WrapFunction(source, sourceLength, "texelFetch", "vgpu_texelFetch", "\nvec4 vgpu_texelFetch(sampler2D sampler, vec2 P, float lod){return texelFetch(sampler,ivec2(int(P.x),int(P.y)),int(lod));}");
+    source = WrapFunction(source, sourceLength, "texelFetch", "vgpu_texelFetch", "\nvec4 vgpu_texelFetch(sampler2D sampler, vec2 P, float lod){return texelFetch(sampler, ivec2(int(P.x), int(P.y)), int(lod));}\n"
+                                                                                 "vec4 vgpu_texelFetch(sampler3D sampler, vec3 P, float lod){return texelFetch(sampler, ivec3(int(P.x), int(P.y), int(P.z)), int(lod));}\n"
+                                                                                 "vec4 vgpu_texelFetch(sampler2DArray sampler, vec3 P, float lod){return texelFetch(sampler, ivec3(int(P.x), int(P.y), int(P.z)), int(lod));}\n"
+                                                                                 "vec4 vgpu_texelFetch(samplerBuffer sampler, float P){return texelFetch(sampler, int(P);}\n"
+                                                                                 "vec4 vgpu_texelFetch(sampler2DMS sampler, vec2 P, float _sample){return texelFetch(sampler, ivec2(int(P.x), int(P.y)), int(_sample));}\n"
+                                                                                 "vec4 vgpu_texelFetch(sampler2DMSArray sampler, vec3 P, float _sample){return texelFetch(sampler, ivec3(int(P.x), int(P.y), int(P.z)), int(_sample));}");
 
 
     return source;
@@ -747,7 +752,6 @@ char * insertIntAtFunctionCall(char * source, int * sourceSize, const char * fun
     //TODO a less naive function for edge-cases ?
     unsigned long functionCallPosition = strstrPos(source, functionName);
     while(functionCallPosition != 0){
-        printf("START !!! %s", source  + functionCallPosition);
         int openingTokenPosition = getNextTokenPosition(source, functionCallPosition + strlen(functionName), '(', " \n\r\t");
         if (source[openingTokenPosition] == '('){
             // Function call found, determine the start and end of the argument
