@@ -212,9 +212,16 @@ char * CoerceIntToFloat(char * source, int * sourceLength){
     source = WrapFunction(source, sourceLength, "int", "float", "\n ");
     source = ReplaceVariableName(source, sourceLength, "uint", "float");
     source = WrapFunction(source, sourceLength, "uint", "float", "\n ");
-    // TODO Yes I could just do the same as above.
-    
+
+    // TODO Yes I could just do the same as above but I'm lazy at times
     source = InplaceReplaceSimple(source, sourceLength, "ivec", "vec");
+    source = InplaceReplaceSimple(source, sourceLength, "uvec", "vec");
+
+    source = InplaceReplaceSimple(source, sourceLength, "isampleBuffer", "sampleBuffer");
+    source = InplaceReplaceSimple(source, sourceLength, "usampleBuffer", "sampleBuffer");
+
+    source = InplaceReplaceSimple(source, sourceLength, "isampler", "sampler");
+    source = InplaceReplaceSimple(source, sourceLength, "usampler", "sampler");
 
 
     // Step 3 is slower.
