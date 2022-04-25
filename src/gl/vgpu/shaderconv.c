@@ -109,7 +109,18 @@ char * WrapIvecFunctions(char * source, int * sourceLength){
                                                                                  "vec4 vgpu_texelFetch(sampler2DMS sampler, vec2 P, float _sample){return texelFetch(sampler, ivec2(int(P.x), int(P.y)), int(_sample));}\n"
                                                                                  "vec4 vgpu_texelFetch(sampler2DMSArray sampler, vec3 P, float _sample){return texelFetch(sampler, ivec3(int(P.x), int(P.y), int(P.z)), int(_sample));}");
 
-
+    source = WrapFunction(source, sourceLength, "textureSize", "vgpu_textureSize", "vec2 vgpu_textureSize(sampler2D sampler, float lod){ivec2 size = textureSize(sampler, int(lod));return vec2(size.x, size.y);}\n"
+                                                                                   "vec3 vgpu_textureSize(sampler3D sampler, float lod){ivec3 size = textureSize(sampler, int(lod));return vec3(size.x, size.y, size.z);}\n"
+                                                                                   "vec2 vgpu_textureSize(samplerCube sampler, float lod){ivec2 size = textureSize(sampler, int(lod));return vec2(size.x, size.y);}\n"
+                                                                                   "vec2 vgpu_textureSize(sampler2DShadow sampler, float lod){ivec2 size = textureSize(sampler, int(lod));return vec2(size.x, size.y);}\n"
+                                                                                   "vec2 vgpu_textureSize(samplerCubeShadow){ivec2 size = textureSize(sampler, int(lod));return vec2(size.x, size.y);}\n"
+                                                                                   "vec3 vgpu_textureSize(samplerCubeArray sampler, float lod){ivec3 size = textureSize(sampler, int(lod));return vec3(size.x, size.y, size.z);}\n"
+                                                                                   "vec3 vgpu_textureSize(samplerCubeArrayShadow sampler, float lod){ivec3 size = textureSize(sampler, int(lod));return vec3(size.x, size.y, size.z);}\n"
+                                                                                   "vec3 vgpu_textureSize(sampler2DArray sampler, float lod){ivec3 size = textureSize(sampler, int(lod));return vec3(size.x, size.y, size.z);}\n"
+                                                                                   "vec3 vgpu_textureSize(sampler2DArrayShadow sampler, float lod){ivec3 size = textureSize(sampler, int(lod));return vec3(size.x, size.y, size.z);}\n"
+                                                                                   "float vgpu_textureSize(samplerBuffer sampler){return float(textureSize(sampler));}\n"
+                                                                                   "vec2 vgpu_textureSize(sampler2DMS sampler){ivec2 size = textureSize(sampler);return vec2(size.x, size.y);}\n"
+                                                                                   "vec3 vgpu_textureSize(sampler2DMSArray sampler){ivec3 size = textureSize(sampler);return vec3(size.x, size.y, size.z);}");
     return source;
 }
 
