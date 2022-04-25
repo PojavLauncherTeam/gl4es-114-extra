@@ -22,6 +22,13 @@ char * ReplaceGLFragColor(char * source, int * sourceLength);
 char * ReplaceVariableName(char * source, int * sourceLength, char * initialName, char* newName);
 char * RemoveUnsupportedExtensions(char * source);
 int doesShaderVersionContainsES(const char * source);
+char * getClosingTokens(char openingToken);
+int isOpeningToken(char openingToken);
+int getClosingTokenPosition(const char * source, int initialTokenPosition);
+int getClosingTokenPositionTokenOverride(const char * source, int initialTokenPosition, char initialToken);
+int getNextTokenPosition(const char * source, int initialPosition, const char token, const char * acceptedChars);
+unsigned long strstrPos(const char * haystack, const char * needle);
+char * insertIntAtFunctionCall(char * source, int * sourceSize, const char * functionName, int argumentPosition);
 
 
 char* GetOperandFromOperator(char* source, int operatorIndex, int rightOperand, int * limit);

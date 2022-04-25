@@ -583,42 +583,6 @@ char * ReplaceVariableName(char * source, int * sourceLength, char * initialName
     return source;
 }
 
-/** Replace the version by new version, period.
- * @param source The pointer to the start of the shader */
-char * GLSLHeader(char* source){
-    /*
-    if(!hardext.glsl320es && !hardext.glsl310es && !hardext.glsl300es){
-        return source;
-    }*/
-    int sourceLength = strlen(source);
-    int startIndex, endIndex = 0;
-    int index = 0;
-    int parserState = 0;
-
-    // Step 1 get to the version
-    while (parserState == 0){
-        if(source[index] == '#' && source[index + 1] == 'v'){
-            parserState = 1;
-            startIndex = index;
-        }
-        index ++;
-    }
-
-    //Step 2 get to the end of the line
-    while(parserState == 1){
-        if(source[index] == '\n'){
-            parserState = 2;
-            endIndex = index;
-        }
-        index++;
-    }
-
-    // Step 3, replace.
-    source = InplaceReplaceByIndex(source, &sourceLength, startIndex, endIndex, new_version);
-
-    return source;
-}
-
 /** Remove 'const ' storage qualifier from variables inside {..} blocks
  * @param source The pointer to the start of the shader */
 char * RemoveConstInsideBlocks(char* source, int * sourceLength){
@@ -675,4 +639,140 @@ int FindPositionAfterDirectives(char * source){
             return i;
         }
     }
+}
+
+/**
+ * @param openingToken The opening token
+ * @return All closing tokens, if available
+ */
+char * getClosingTokens(char openingToken){
+    switch (openingToken) {
+        case '(': return ")";
+        case '[': return "]";
+        case ',': return ",)";
+        case '{': return "}";
+
+        default: return "";
+    }
+}
+
+/**
+ * @param openingToken The opening token
+ * @return Whether the token is an opening token
+ */
+int isOpeningToken(char openingToken){
+    return strlen(getClosingTokens(openingToken)) != 0;
+}
+
+int getClosingTokenPosition(const char * source, int initialTokenPosition){
+    return getClosingTokenPositionTokenOverride(source, initialTokenPosition, source[initialTokenPosition]);
+}
+
+/**
+ * Get the index of the closing token within a string, same as initialTokenPosition if not found
+ * @param source The string to look into
+ * @param initialTokenPosition The opening token position
+ * @return The closing token position
+ */
+int getClosingTokenPositionTokenOverride(const char * source, int initialTokenPosition, char initialToken){
+    // Step 1: Determine the closing token
+    char openingToken = initialToken;
+    char * closingTokens = getClosingTokens(openingToken);
+
+    if (strlen(closingTokens) == 0) return initialTokenPosition;
+
+    // Step 2: Go through the string to find what we want
+    for(int i=initialTokenPosition+1; i<strlen(source); ++i){
+        // Loop though all the available closing tokens first, since opening/closing tokens can be identical
+        for(int j=0; j<strlen(closingTokens); ++j){
+            if (source[i] == closingTokens[j]){
+                return i;
+            }
+        }
+
+        if (isOpeningToken(source[i])){
+            i = getClosingTokenPosition(source, i);
+            continue;
+        }
+    }
+    return initialTokenPosition; // Nothing found
+}
+
+
+
+/**
+ * Return the position of the first token corresponding to what we want
+ * @param source The source string
+ * @param initialPosition The starting position to look from
+ * @param token The token you want to find
+ * @param acceptedChars All chars we can go over without tripping. Empty means all chars are allowed.
+ * @return
+ */
+int getNextTokenPosition(const char * source, int initialPosition, const char token, const char * acceptedChars){
+    for(int i=initialPosition+1; i< strlen(source); ++i){
+        // Tripping check
+        if(strlen(acceptedChars) >= 0){
+            for(int j=0; j< strlen(acceptedChars); ++j){
+                if (source[i] == acceptedChars[j]) break; // No tripping, continue
+            }
+            return initialPosition; // Tripped, meaning the token is not found
+        }
+
+        if (source[i] == token){
+            return i;
+        }
+    }
+    return initialPosition;
+}
+
+/**
+ * @param haystack
+ * @param needle
+ * @return The position of the first occurence of the needle in the haystack
+ */
+unsigned long strstrPos(const char * haystack, const char * needle){
+    char * substr = strstr(haystack, needle);
+    if (substr == NULL) return 0;
+    return (substr - haystack);
+}
+
+/**
+ * Inserts int(...) on a specific argument from each call to the function
+ * @param source The shader as a string
+ * @param functionName The name of the function to manipulate
+ * @param argumentPosition The position of the argument to manipulate, from 0. If not found, no changes are made.
+ * @return The shader as a string, maybe in a different memory location
+ */
+char * insertIntAtFunctionCall(char * source, int * sourceSize, const char * functionName, int argumentPosition){
+    //TODO a less naive function for edge-cases ?
+    unsigned long functionCallPosition = strstrPos(source, functionName);
+    while(functionCallPosition != 0){
+        printf("START !!! %s", source  + functionCallPosition);
+        int openingTokenPosition = getNextTokenPosition(source, functionCallPosition + strlen(functionName), '(', " \n\r\t");
+        if (source[openingTokenPosition] == '('){
+            // Function call found, determine the start and end of the argument
+            int endArgPos = openingTokenPosition;
+            int startArgPos = openingTokenPosition;
+
+            // Note the additional check to see we aren't at the end of a function
+            for(int argCount=0; argCount<=argumentPosition && source[startArgPos] != ')'; ++argCount){
+                endArgPos = getClosingTokenPositionTokenOverride(source, endArgPos, ',');
+                if (argCount == argumentPosition){
+                    // Argument found, insert the int(...)
+                    source = InplaceReplaceByIndex(source, sourceSize, endArgPos, endArgPos-1, ")");
+                    source = InplaceReplaceByIndex(source, sourceSize, startArgPos+1, startArgPos, "int(");
+
+                    break;
+                }
+                // Not the arg we want, got to the next one
+                startArgPos = endArgPos;
+            }
+        }
+
+        // Get the next function call
+        unsigned long offset = strstrPos(source + functionCallPosition + strlen(functionName), functionName);
+        if (offset == 0) break; // No more function calls
+        functionCallPosition += offset + strlen(functionName);
+    }
+    return source;
 }
