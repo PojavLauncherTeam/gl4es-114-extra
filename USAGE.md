@@ -325,6 +325,11 @@ Note that you can combine (logical or state. So 14 will be only Fragment shader 
 Note also that if neither Fragment and Vertex are defined, both will be selected. Same for Before and After.
 At last, the value "1" will be changed to "15", to log everything.
 
+##### LIBGL_VGPU_DUMP
+Log to the console all shaders before and after passing through the VGPU shader conversion pipeline
+* 0 : Default, don't log anything
+* 1 : Log every shader going though the pipeline
+
 ##### LIBGL_NOPSA
 Disable the use of the Precompiled Shader Archive
 * 0 : Default: use (and save) the PSA (it's saved on $HOME/.gl4es.psa on linux)

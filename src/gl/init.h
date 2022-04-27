@@ -64,6 +64,7 @@ typedef struct _globals4es {
  int glxrecycle;
  int noclean;
  int dbgshaderconv;
+ int vgpu_dump;         // Whether or not vgpu dumps the shader input and output.
  int nopsa;
  int noes2;
  int nointovlhack;

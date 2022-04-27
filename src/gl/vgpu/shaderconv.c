@@ -21,7 +21,10 @@ int NO_OPERATOR_VALUE = 9999;
  * @param source The start of the shader as a string*/
 char * ConvertShaderVgpu(struct shader_s * shader_source){
 
-    printf("VGPU BEGIN: \n%s", shader_source->converted);
+    if (globals4es.vgpu_dump){
+        printf("New VGPU Shader source:\n%s\n", shader_source->converted);
+    }
+
     // Get the shader source
     char * source = shader_source->converted;
     int sourceLength = strlen(source) + 1;
@@ -29,7 +32,9 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
     // TODO Deal with lower versions ?
     // For now, skip stuff
     if(FindString(source, "#version 100")){
-        printf("OLD VERSION, SKIPPING !");
+        if (globals4es.vgpu_dump) {
+            printf("OLD VERSION, SKIPPING !\n");
+        }
         return source;
     }
 
@@ -45,11 +50,11 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
     //source = ReplaceVariableName(source, &sourceLength, "mediump", "lowp");
 
     // Avoid keyword clash with gl4es #define blocks
-    printf("REPLACING KEYWORDS");
+    //printf("REPLACING KEYWORDS");
     //source = ReplaceVariableName(source, "texture", "vgpu_Texture");
     source = ReplaceVariableName(source, &sourceLength, "sample", "vgpu_Sample");
 
-    printf("REMOVING \" CHARS ");
+    //printf("REMOVING \" CHARS ");
     // " not really supported here
     source = InplaceReplaceSimple(source, &sourceLength, "\"", "");
 
@@ -59,38 +64,42 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
     //source = RemoveUnsupportedExtensions(source);
 
     // OpenGL natively supports non const global initializers, not OPENGL ES except if we add an extension
-    printf("ADDING EXTENSIONS\n");
+    //printf("ADDING EXTENSIONS\n");
     int insertPoint = FindPositionAfterDirectives(source);
-    printf("INSERT POINT: %i\n", insertPoint);
+    //printf("INSERT POINT: %i\n", insertPoint);
     source = InplaceReplaceByIndex(source, &sourceLength, insertPoint, insertPoint-1, "\n#extension GL_EXT_shader_non_constant_global_initializers : enable\n");
 
-    printf("REPLACING mod OPERATORS");
+    //printf("REPLACING mod OPERATORS");
     // No support for % operator, so we replace it
     source = ReplaceModOperator(source, &sourceLength);
 
-    printf("COERCING INT TO FLOATS");
+    //printf("COERCING INT TO FLOATS");
     // Hey we don't want to deal with implicit type stuff
     source = CoerceIntToFloat(source, &sourceLength);
 
-    printf("FIXING ARRAY ACCESS");
+    //printf("FIXING ARRAY ACCESS");
     // Avoid any weird type trying to be an index for an array
     source = ForceIntegerArrayAccess(source, &sourceLength);
 
-    printf("WRAPPING FUNCTION");
+    //printf("WRAPPING FUNCTION");
     // Since everything is a float, we need to overload WAY TOO MANY functions
     source = WrapIvecFunctions(source, &sourceLength);
 
-    printf("REMOVING DUBIOUS DEFINES");
+    //printf("REMOVING DUBIOUS DEFINES");
     source = InplaceReplaceSimple(source, &sourceLength, "#define texture texture2D", "\n");
 
     // Draw buffers aren't dealt the same on OPEN GL|ES
     if(shader_source->type == GL_FRAGMENT_SHADER && doesShaderVersionContainsES(source) ){
-        printf("REPLACING FRAG DATA");
+        //printf("REPLACING FRAG DATA");
         source = ReplaceGLFragData(source, &sourceLength);
-        printf("REPLACING FRAG COLOR");
+        //printf("REPLACING FRAG COLOR");
         source = ReplaceGLFragColor(source, &sourceLength);
     }
-    printf("VGPU END: \n%s", source);
+
+    if (globals4es.vgpu_dump){
+        printf("New VGPU Shader source:\n%s\n", shader_source->converted);
+    }
+
     return source;
 }
 

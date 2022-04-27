@@ -606,6 +606,7 @@ void initialize_gl4es() {
       SHUT_LOGD_NOPREFIX("\n");
     }
 
+    env(LIBGL_VGPU_DUMP, globals4es.vgpu_dump, "Dump the content of VGPU shader conversion");
     env(LIBGL_NOCLEAN, globals4es.noclean, "Don't clean Context when destroy");
 
     globals4es.glxrecycle = 1;
