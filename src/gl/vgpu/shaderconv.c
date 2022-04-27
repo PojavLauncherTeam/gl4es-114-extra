@@ -109,7 +109,7 @@ char * WrapIvecFunctions(char * source, int * sourceLength){
                                                                                  "vec4 vgpu_texelFetch(sampler2DMS sampler, vec2 P, float _sample){return texelFetch(sampler, ivec2(int(P.x), int(P.y)), int(_sample));}\n"
                                                                                  "vec4 vgpu_texelFetch(sampler2DMSArray sampler, vec3 P, float _sample){return texelFetch(sampler, ivec3(int(P.x), int(P.y), int(P.z)), int(_sample));}");
 
-    source = WrapFunction(source, sourceLength, "textureSize", "vgpu_textureSize", "vec2 vgpu_textureSize(sampler2D sampler, float lod){ivec2 size = textureSize(sampler, int(lod));return vec2(size.x, size.y);}\n"
+    source = WrapFunction(source, sourceLength, "textureSize", "vgpu_textureSize", "\nvec2 vgpu_textureSize(sampler2D sampler, float lod){ivec2 size = textureSize(sampler, int(lod));return vec2(size.x, size.y);}\n"
                                                                                    "vec3 vgpu_textureSize(sampler3D sampler, float lod){ivec3 size = textureSize(sampler, int(lod));return vec3(size.x, size.y, size.z);}\n"
                                                                                    "vec2 vgpu_textureSize(samplerCube sampler, float lod){ivec2 size = textureSize(sampler, int(lod));return vec2(size.x, size.y);}\n"
                                                                                    "vec2 vgpu_textureSize(sampler2DShadow sampler, float lod){ivec2 size = textureSize(sampler, int(lod));return vec2(size.x, size.y);}\n"
@@ -121,6 +121,15 @@ char * WrapIvecFunctions(char * source, int * sourceLength){
                                                                                    "float vgpu_textureSize(samplerBuffer sampler){return float(textureSize(sampler));}\n"
                                                                                    "vec2 vgpu_textureSize(sampler2DMS sampler){ivec2 size = textureSize(sampler);return vec2(size.x, size.y);}\n"
                                                                                    "vec3 vgpu_textureSize(sampler2DMSArray sampler){ivec3 size = textureSize(sampler);return vec3(size.x, size.y, size.z);}");
+
+    source = WrapFunction(source, sourceLength, "textureOffset", "vgpu_textureOffset", "\nvec4 vgpu_textureOffset(sampler2D sampler, vec2 P, vec2 offset){return textureOffset(sampler, P, ivec2(int(offset.x), int(offset.y)));}\n"
+                                                                                       "vec4 vgpu_textureOffset(sampler2D sampler, vec2 P, vec2 offset, float bias){return textureOffset(sampler, P, ivec2(int(offset.x), int(offset.y)), bias);}\n"
+                                                                                       "vec4 vgpu_textureOffset(sampler3D sampler, vec3 P, vec3 offset){return textureOffset(sampler, P, ivec3(int(offset.x), int(offset.y), int(offset.y)));}\n"
+                                                                                       "vec4 vgpu_textureOffset(sampler3D sampler, vec3 P, vec3 offset, float bias){return textureOffset(sampler, P, ivec3(int(offset.x), int(offset.y), int(offset.x)), bias);}\n"
+                                                                                       "vec4 vgpu_textureOffset(sampler2DShadow sampler, vec3 P, vec2 offset){return textureOffset(sampler, P, ivec2(int(offset.x), int(offset.y)));}\n"
+                                                                                       "vec4 vgpu_textureOffset(sampler2DShadow sampler, vec3 P, vec2 offset, float bias){return textureOffset(sampler, P, ivec2(int(offset.x), int(offset.y)), bias);}\n"
+                                                                                       "vec4 vgpu_textureOffset(sampler2DArray sampler, vec3 P, vec2 offset){return textureOffset(sampler, P, ivec2(int(offset.x), int(offset.y)));}\n"
+                                                                                       "vec4 vgpu_textureOffset(sampler2DArray sampler, vec3 P, vec2 offset, float bias){return textureOffset(sampler, P, ivec2(int(offset.x), int(offset.y)), bias);}\n");
     return source;
 }
 
