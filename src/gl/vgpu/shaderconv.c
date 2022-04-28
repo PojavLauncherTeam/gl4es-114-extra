@@ -97,7 +97,7 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
     }
 
     if (globals4es.vgpu_dump){
-        printf("New VGPU Shader source:\n%s\n", shader_source->converted);
+        printf("New VGPU Shader conversion:\n%s\n", source);
     }
 
     return source;
