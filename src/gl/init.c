@@ -606,7 +606,12 @@ void initialize_gl4es() {
       SHUT_LOGD_NOPREFIX("\n");
     }
 
+    // VGPU pipeline stuff
     env(LIBGL_VGPU_DUMP, globals4es.vgpu_dump, "Dump the content of VGPU shader conversion");
+    env(LIBGL_VGPU_FORCE, globals4es.vgpu_force_conv, "Force VGPU pipeline to convert every shader")
+    globals4es.vgpu_precision = ReturnEnvVarIntDef("LIBGL_VGPU_PRECISION", 0);
+
+
     env(LIBGL_NOCLEAN, globals4es.noclean, "Don't clean Context when destroy");
 
     globals4es.glxrecycle = 1;

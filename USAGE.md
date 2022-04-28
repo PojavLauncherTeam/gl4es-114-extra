@@ -330,6 +330,19 @@ Log to the console all shaders before and after passing through the VGPU shader 
 * 0 : Default, don't log anything
 * 1 : Log every shader going though the pipeline
 
+##### LIBGL_VGPU_FORCE
+Force the vgpu shader conversion pipeline to convert every shader.
+* 0 : Default, don't convert #version 100 shaders
+* 1 : Convert every shader, regardless of the #version directive
+
+##### LIBGL_VGPU_PRECISION
+Override the precision used on the pipeline
+* 0 : Default, no changes are made
+* 1 : Force highp where possible
+* 2 : Force mediump where possible
+* 3 : Force lowp where possible
+Many drivers map lowp to the same precision as mediump
+
 ##### LIBGL_NOPSA
 Disable the use of the Precompiled Shader Archive
 * 0 : Default: use (and save) the PSA (it's saved on $HOME/.gl4es.psa on linux)

@@ -31,7 +31,7 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
 
     // TODO Deal with lower versions ?
     // For now, skip stuff
-    if(FindString(source, "#version 100")){
+    if(!globals4es.vgpu_force_conv && FindString(source, "#version 100")){
         if (globals4es.vgpu_dump) {
             printf("OLD VERSION, SKIPPING !\n");
         }
@@ -46,8 +46,18 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
 
 
     //printf("FUCKING UP PRECISION");
-    source = ReplaceVariableName(source, &sourceLength, "highp", "mediump");
-    //source = ReplaceVariableName(source, &sourceLength, "mediump", "lowp");
+    if (globals4es.vgpu_precision != 0){
+        char * target_precision = "";
+        switch (globals4es.vgpu_precision) {
+            case 1: target_precision = "highp"; break;
+            case 2: target_precision = "mediump"; break;
+            case 3: target_precision = "lowp"; break;
+            default: target_precision = "highp";
+        }
+        source = ReplaceVariableName(source, &sourceLength, "highp", target_precision);
+        source = ReplaceVariableName(source, &sourceLength, "mediump", target_precision);
+        source = ReplaceVariableName(source, &sourceLength, "lowp", target_precision);
+    }
 
     // Avoid keyword clash with gl4es #define blocks
     //printf("REPLACING KEYWORDS");
@@ -86,7 +96,16 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
     source = WrapIvecFunctions(source, &sourceLength);
 
     //printf("REMOVING DUBIOUS DEFINES");
-    source = InplaceReplaceSimple(source, &sourceLength, "#define texture texture2D", "\n");
+    source = InplaceReplaceSimple(source, &sourceLength, "#define texture texture2D\n", "");
+    source = InplaceReplaceSimple(source, &sourceLength, "#define attribute in\n", "");
+    source = InplaceReplaceSimple(source, &sourceLength, "#define varying out\n", "");
+
+    if (shader_source->type == GL_VERTEX_SHADER){
+        source = ReplaceVariableName(source, &sourceLength, "attribute", "in");
+        source = ReplaceVariableName(source, &sourceLength, "varying", "out");
+    }else{
+        source = ReplaceVariableName(source, &sourceLength, "varying", "in");
+    }
 
     // Draw buffers aren't dealt the same on OPEN GL|ES
     if(shader_source->type == GL_FRAGMENT_SHADER && doesShaderVersionContainsES(source) ){
@@ -122,14 +141,14 @@ char * WrapIvecFunctions(char * source, int * sourceLength){
                                                                                    "vec3 vgpu_textureSize(sampler3D sampler, float lod){ivec3 size = textureSize(sampler, int(lod));return vec3(size.x, size.y, size.z);}\n"
                                                                                    "vec2 vgpu_textureSize(samplerCube sampler, float lod){ivec2 size = textureSize(sampler, int(lod));return vec2(size.x, size.y);}\n"
                                                                                    "vec2 vgpu_textureSize(sampler2DShadow sampler, float lod){ivec2 size = textureSize(sampler, int(lod));return vec2(size.x, size.y);}\n"
-                                                                                   "vec2 vgpu_textureSize(samplerCubeShadow){ivec2 size = textureSize(sampler, int(lod));return vec2(size.x, size.y);}\n"
+                                                                                   "vec2 vgpu_textureSize(samplerCubeShadow sampler, float lod){ivec2 size = textureSize(sampler, int(lod));return vec2(size.x, size.y);}\n"
                                                                                    "vec3 vgpu_textureSize(samplerCubeArray sampler, float lod){ivec3 size = textureSize(sampler, int(lod));return vec3(size.x, size.y, size.z);}\n"
                                                                                    "vec3 vgpu_textureSize(samplerCubeArrayShadow sampler, float lod){ivec3 size = textureSize(sampler, int(lod));return vec3(size.x, size.y, size.z);}\n"
                                                                                    "vec3 vgpu_textureSize(sampler2DArray sampler, float lod){ivec3 size = textureSize(sampler, int(lod));return vec3(size.x, size.y, size.z);}\n"
                                                                                    "vec3 vgpu_textureSize(sampler2DArrayShadow sampler, float lod){ivec3 size = textureSize(sampler, int(lod));return vec3(size.x, size.y, size.z);}\n"
                                                                                    "float vgpu_textureSize(samplerBuffer sampler){return float(textureSize(sampler));}\n"
                                                                                    "vec2 vgpu_textureSize(sampler2DMS sampler){ivec2 size = textureSize(sampler);return vec2(size.x, size.y);}\n"
-                                                                                   "vec3 vgpu_textureSize(sampler2DMSArray sampler){ivec3 size = textureSize(sampler);return vec3(size.x, size.y, size.z);}");
+                                                                                   "vec3 vgpu_textureSize(sampler2DMSArray sampler){ivec3 size = textureSize(sampler);return vec3(size.x, size.y, size.z);}\n");
 
     source = WrapFunction(source, sourceLength, "textureOffset", "vgpu_textureOffset", "\nvec4 vgpu_textureOffset(sampler2D sampler, vec2 P, vec2 offset){return textureOffset(sampler, P, ivec2(int(offset.x), int(offset.y)));}\n"
                                                                                        "vec4 vgpu_textureOffset(sampler2D sampler, vec2 P, vec2 offset, float bias){return textureOffset(sampler, P, ivec2(int(offset.x), int(offset.y)), bias);}\n"
@@ -246,7 +265,7 @@ char * CoerceIntToFloat(char * source, int * sourceLength){
     // We need to parse hardcoded values like 1 and turn it into 1.(0)
     for(int i=0; i<*sourceLength; ++i){
 
-        // Avoid version directives
+        // Avoid version/line directives
         if(source[i] == '#' && (source[i + 1] == 'v' || source[i + 1] == 'l') ){
             // Look for the next line
             while (source[i] != '\n'){
@@ -264,14 +283,14 @@ char * CoerceIntToFloat(char * source, int * sourceLength){
 
         if(source[i-1] == '.' || source[i+1] == '.') continue;// Number part of a float
         if(isValidFunctionName(source[i - 1])) continue; // Char attached to something related
-        if(/*isDigit(source[i-1]) || */ isDigit(source[i+1])) continue; // End of number not reached
+        if(isDigit(source[i+1])) continue; // End of number not reached
         if(isDigit(source[i-1])){
             // Backtrack to check if the number is floating point
             int shouldBeCoerced = 0;
             for(int j=1; 1; ++j){
                 if(isDigit(source[i-j])) continue;
                 if(isValidFunctionName(source[i-j])) break; // Function or variable name, don't coerce
-                if(source[i-j] == '.' || source[i-j] == '+') break; // No coercion, float or scientific notation already
+                if(source[i-j] == '.' || ((source[i-j] == '+' || source[i-j] == '-') && source[i-j-1] == 'e')) break; // No coercion, float or scientific notation already
                 // Nothing found, should be coerced then
                 shouldBeCoerced = 1;
                 break;
@@ -597,7 +616,7 @@ char * ReplaceVariableName(char * source, int * sourceLength, char * initialName
     char * toReplace = malloc(strlen(initialName) + 3);
     char * replacement = malloc(strlen(newName) + 3);
     //char * chars = "()[].+-*/~!%<>&|;,{} \n\t";
-    char * charBefore = "([];+-*/~!%<>,&| \n\t";
+    char * charBefore = "{}([];+-*/~!%<>,&| \n\t";
     char * charAfter = ")[];+-*/%<>;,|&. \n\t";
 
     for (int i = 0; i < strlen(charBefore); ++i) {
