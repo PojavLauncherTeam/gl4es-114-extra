@@ -50,7 +50,7 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
 
     // Avoid keyword clash with gl4es #define blocks
     //printf("REPLACING KEYWORDS");
-    //source = ReplaceVariableName(source, "texture", "vgpu_Texture");
+    source = InplaceReplaceSimple(source, &sourceLength, "#define texture2D texture\n", "");
     source = ReplaceVariableName(source, &sourceLength, "sample", "vgpu_Sample");
     source = ReplaceVariableName(source, &sourceLength, "texture", "vgpu_texture");
 
@@ -654,19 +654,19 @@ char * ReplaceFunctionName(char * source, int * sourceLength, char * initialName
 
         // Check if that is indeed a function call on the right side
         if (source[GetNextTokenPosition(source, currentPosition + newPosition + strlen(initialName), '(', " \n\t")] != '('){
-            currentPosition = newPosition;
+            currentPosition += newPosition;
             continue; // Skip to the next potential call
         }
 
         // Check the naming on the left side
-        if (isValidFunctionName(source[currentPosition-1])){
-            currentPosition = newPosition;
+        if (isValidFunctionName(source[currentPosition + newPosition - 1])){
+            currentPosition += newPosition;
             continue; // Skip to the next potential call
         }
 
         // This is a valid function call/definition, replace it
-        source = InplaceReplaceByIndex(source, sourceLength, newPosition, newPosition + strlen(initialName) - 1, finalName);
-        currentPosition = newPosition;
+        source = InplaceReplaceByIndex(source, sourceLength, currentPosition + newPosition, currentPosition + newPosition + strlen(initialName) - 1, finalName);
+        currentPosition += newPosition;
     }
     return source;
 }
@@ -724,6 +724,16 @@ int FindPositionAfterDirectives(char * source){
     for(int i=7; 1; ++i){
         if(position[i] == '\n'){
             if(position[i+1] == '#') continue; // a directive is present right after, skip
+            return i;
+        }
+    }
+}
+
+int FindPositionAfterVersion(char * source){
+    const char * position = FindString(source, "#version");
+    if (position == NULL) return 0;
+    for(int i=7; 1; ++i){
+        if(position[i] == '\n'){
             return i;
         }
     }

@@ -17,6 +17,7 @@ char * ReplaceModOperator(char * source, int * sourceLength);
 char * WrapIvecFunctions(char * source, int * sourceLength);
 char * WrapFunction(char * source, int * sourceLength, char * functionName, char * wrapperFunctionName, char * wrapperFunction);
 int FindPositionAfterDirectives(char * source);
+int FindPositionAfterVersion(char * source);
 char * ReplaceGLFragData(char * source, int * sourceLength);
 char * ReplaceGLFragColor(char * source, int * sourceLength);
 char * ReplaceVariableName(char * source, int * sourceLength, char * initialName, char* newName);
