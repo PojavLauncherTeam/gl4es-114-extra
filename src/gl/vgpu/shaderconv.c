@@ -55,7 +55,7 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
     source = ReplaceVariableName(source, &sourceLength, "texture", "vgpu_texture");
 
     source = ReplaceFunctionName(source, &sourceLength, "texture2D", "texture");
-    source = WrapFunction(source, &sourceLength, "shadow2D", "vgpu_shadow2D", "\nvec3 vgpu_shadow2D(sampler2DShadow shadow, vec3 coord){return vec3(texture(shadow, coord), 0.0, 0.0);}\n");
+
 
     //printf("REMOVING \" CHARS ");
     // " not really supported here
@@ -151,6 +151,9 @@ char * WrapIvecFunctions(char * source, int * sourceLength){
                                                                                        "vec4 vgpu_textureOffset(sampler2DShadow sampler, vec3 P, vec2 offset, float bias){return textureOffset(sampler, P, ivec2(int(offset.x), int(offset.y)), bias);}\n"
                                                                                        "vec4 vgpu_textureOffset(sampler2DArray sampler, vec3 P, vec2 offset){return textureOffset(sampler, P, ivec2(int(offset.x), int(offset.y)));}\n"
                                                                                        "vec4 vgpu_textureOffset(sampler2DArray sampler, vec3 P, vec2 offset, float bias){return textureOffset(sampler, P, ivec2(int(offset.x), int(offset.y)), bias);}\n");
+
+    source = WrapFunction(source, sourceLength, "shadow2D", "vgpu_shadow2D", "\nvec4 vgpu_shadow2D(sampler2DShadow shadow, vec3 coord){return vec4(texture(shadow, coord), 0.0, 0.0, 0.0);}\n"
+                                                                              "vec4 vgpu_shadow2D(sampler2DShadow shadow, vec3 coord, float bias){return vec4(texture(shadow, coord, bias), 0.0, 0.0, 0.0);}\n");
     return source;
 }
 
@@ -163,10 +166,10 @@ char * WrapIvecFunctions(char * source, int * sourceLength){
  * @return The shader as a string, maybe in a different memory location
  */
 char * WrapFunction(char * source, int * sourceLength, char * functionName, char * wrapperFunctionName, char * wrapperFunction){
-    int originalSize = *sourceLength;
+    int originalSize = strlen(source);
     source = ReplaceFunctionName(source, sourceLength, functionName, wrapperFunctionName);
     // If some calls got replaced, add the wrapper
-    if(originalSize != *sourceLength){
+    if(originalSize != strlen(source)){
         int insertPoint = FindPositionAfterDirectives(source);
         source = InplaceReplaceByIndex(source, sourceLength, insertPoint, insertPoint-1, wrapperFunction);
     }
