@@ -54,8 +54,8 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
     source = ReplaceVariableName(source, &sourceLength, "sample", "vgpu_Sample");
     source = ReplaceVariableName(source, &sourceLength, "texture", "vgpu_texture");
 
-    source = ReplaceFunctionName(source, &sourceLength, "shadow2D", "texture");
     source = ReplaceFunctionName(source, &sourceLength, "texture2D", "texture");
+    source = WrapFunction(source, &sourceLength, "shadow2D", "vgpu_shadow2D", "\nvec3 vgpu_shadow2D(sampler2DShadow shadow, vec3 coord){return vec3(texture(shadow, coord), 0.0, 0.0);}\n");
 
     //printf("REMOVING \" CHARS ");
     // " not really supported here
@@ -163,31 +163,14 @@ char * WrapIvecFunctions(char * source, int * sourceLength){
  * @return The shader as a string, maybe in a different memory location
  */
 char * WrapFunction(char * source, int * sourceLength, char * functionName, char * wrapperFunctionName, char * wrapperFunction){
-    // Okay, we have a few cases to distinguish to make sure we don't replace something unintended:
-    // Let's say we want to replace a "FunctionName"
-    // float FunctionNameResult ...             ----- something between FunctionName and the ( , skip it.
-    // BiggerFunctionName(...                   ----- FunctionName part of another function ! Skip it.
-    // Function(FunctionName( ...               ----- There is a call to function name
-
-
-    const char * findStringPtr = FindString(source, functionName);
-    if(findStringPtr){
-        // Check the right end for the opening token
-        int initialPosition = strlen(functionName);
-        if (GetNextTokenPosition(source, initialPosition, '(', " \n\t") == initialPosition){
-            return source;
-        }
-
-        // Left end
-        findStringPtr --;
-        if(isValidFunctionName(findStringPtr[0])) return source; // Var or function name
-        // At this point, the call is real, so just replace them
-        // TODO, huuuu maybe not do this, it confirms one function is good then try to replace everything instead of verifying each function call
+    int originalSize = *sourceLength;
+    source = ReplaceFunctionName(source, sourceLength, functionName, wrapperFunctionName);
+    // If some calls got replaced, add the wrapper
+    if(originalSize != *sourceLength){
         int insertPoint = FindPositionAfterDirectives(source);
-        source = InplaceReplaceSimple(source, sourceLength, functionName, wrapperFunctionName);
         source = InplaceReplaceByIndex(source, sourceLength, insertPoint, insertPoint-1, wrapperFunction);
-        //printf("WHAT THE FUCK IS BROKEN TIMES TWO : \n%s", wrapperFunction);
     }
+
     return source;
 }
 
