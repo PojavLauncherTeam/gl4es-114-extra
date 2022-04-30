@@ -46,23 +46,16 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
 
 
     //printf("FUCKING UP PRECISION");
-    if (globals4es.vgpu_precision != 0){
-        char * target_precision = "";
-        switch (globals4es.vgpu_precision) {
-            case 1: target_precision = "highp"; break;
-            case 2: target_precision = "mediump"; break;
-            case 3: target_precision = "lowp"; break;
-            default: target_precision = "highp";
-        }
-        source = ReplaceVariableName(source, &sourceLength, "highp", target_precision);
-        source = ReplaceVariableName(source, &sourceLength, "mediump", target_precision);
-        source = ReplaceVariableName(source, &sourceLength, "lowp", target_precision);
-    }
+    source = ReplacePrecisionQualifiers(source, &sourceLength);
 
     // Avoid keyword clash with gl4es #define blocks
     //printf("REPLACING KEYWORDS");
     //source = ReplaceVariableName(source, "texture", "vgpu_Texture");
     source = ReplaceVariableName(source, &sourceLength, "sample", "vgpu_Sample");
+    source = ReplaceVariableName(source, &sourceLength, "texture", "vgpu_texture");
+
+    source = ReplaceFunctionName(source, &sourceLength, "shadow2D", "texture");
+    source = ReplaceFunctionName(source, &sourceLength, "texture2D", "texture");
 
     //printf("REMOVING \" CHARS ");
     // " not really supported here
@@ -179,10 +172,9 @@ char * WrapFunction(char * source, int * sourceLength, char * functionName, char
 
     const char * findStringPtr = FindString(source, functionName);
     if(findStringPtr){
-        // Check the right end
-        for(int i= strlen(functionName); 1; ++i){
-            if(findStringPtr[i] == ' ' || findStringPtr[i] == '\n') continue;
-            if (findStringPtr[i] == '(') break; // Allowed going further, since it looks like a function call
+        // Check the right end for the opening token
+        int initialPosition = strlen(functionName);
+        if (GetNextTokenPosition(source, initialPosition, '(', " \n\t") == initialPosition){
             return source;
         }
 
@@ -190,6 +182,7 @@ char * WrapFunction(char * source, int * sourceLength, char * functionName, char
         findStringPtr --;
         if(isValidFunctionName(findStringPtr[0])) return source; // Var or function name
         // At this point, the call is real, so just replace them
+        // TODO, huuuu maybe not do this, it confirms one function is good then try to replace everything instead of verifying each function call
         int insertPoint = FindPositionAfterDirectives(source);
         source = InplaceReplaceSimple(source, sourceLength, functionName, wrapperFunctionName);
         source = InplaceReplaceByIndex(source, sourceLength, insertPoint, insertPoint-1, wrapperFunction);
@@ -615,23 +608,25 @@ char * ReplaceVariableName(char * source, int * sourceLength, char * initialName
 
     char * toReplace = malloc(strlen(initialName) + 3);
     char * replacement = malloc(strlen(newName) + 3);
-    //char * chars = "()[].+-*/~!%<>&|;,{} \n\t";
     char * charBefore = "{}([];+-*/~!%<>,&| \n\t";
     char * charAfter = ")[];+-*/%<>;,|&. \n\t";
+
+    // Prepare the fixed part of the strings
+    strcpy(toReplace+1, initialName);
+    toReplace[strlen(initialName)+2] = '\0';
+
+    strcpy(replacement+1, newName);
+    replacement[strlen(newName)+2] = '\0';
 
     for (int i = 0; i < strlen(charBefore); ++i) {
         for (int j = 0; j < strlen(charAfter); ++j) {
             // Prepare the string to replace
             toReplace[0] = charBefore[i];
-            strcpy(toReplace+1, initialName);
             toReplace[strlen(initialName)+1] = charAfter[j];
-            toReplace[strlen(initialName)+2] = '\0';
 
             // Prepare the replacement string
             replacement[0] = charBefore[i];
-            strcpy(replacement+1, newName);
             replacement[strlen(newName)+1] = charAfter[j];
-            replacement[strlen(newName)+2] = '\0';
 
             source = InplaceReplaceSimple(source, sourceLength, toReplace, replacement);
         }
@@ -640,6 +635,39 @@ char * ReplaceVariableName(char * source, int * sourceLength, char * initialName
     free(toReplace);
     free(replacement);
 
+    return source;
+}
+
+/**
+ * Replace a function definition and calls to the function to another name
+ * @param source The shader as a string
+ * @param sourceLength The shader length
+ * @param initialName The name be to changed
+ * @param finalName The name to use instead
+ * @return The shader as a string, maybe in a different memory location
+ */
+char * ReplaceFunctionName(char * source, int * sourceLength, char * initialName, char * finalName){
+    for(unsigned long currentPosition = 0; 1; currentPosition += strlen(initialName)){
+        unsigned long newPosition = strstrPos(source + currentPosition, initialName);
+        if(newPosition == 0) // No more calls
+            break;
+
+        // Check if that is indeed a function call on the right side
+        if (source[GetNextTokenPosition(source, currentPosition + newPosition + strlen(initialName), '(', " \n\t")] != '('){
+            currentPosition = newPosition;
+            continue; // Skip to the next potential call
+        }
+
+        // Check the naming on the left side
+        if (isValidFunctionName(source[currentPosition-1])){
+            currentPosition = newPosition;
+            continue; // Skip to the next potential call
+        }
+
+        // This is a valid function call/definition, replace it
+        source = InplaceReplaceByIndex(source, sourceLength, newPosition, newPosition + strlen(initialName) - 1, finalName);
+        currentPosition = newPosition;
+    }
     return source;
 }
 
@@ -702,10 +730,33 @@ int FindPositionAfterDirectives(char * source){
 }
 
 /**
+ * Replace and inserts precision qualifiers as necessary, see LIBGL_VGPU_PRECISION
+ * @param source The shader as a string
+ * @param sourceLength The length of the string
+ * @return The shader as a string, maybe in a different memory location
+ */
+char * ReplacePrecisionQualifiers(char * source, int * sourceLength){
+    if (globals4es.vgpu_precision != 0){
+        char * target_precision = "";
+        switch (globals4es.vgpu_precision) {
+            case 1: target_precision = "highp"; break;
+            case 2: target_precision = "mediump"; break;
+            case 3: target_precision = "lowp"; break;
+            default: target_precision = "highp";
+        }
+        source = ReplaceVariableName(source, sourceLength, "highp", target_precision);
+        source = ReplaceVariableName(source, sourceLength, "mediump", target_precision);
+        source = ReplaceVariableName(source, sourceLength, "lowp", target_precision);
+    }
+
+    return source;
+}
+
+/**
  * @param openingToken The opening token
  * @return All closing tokens, if available
  */
-char * getClosingTokens(char openingToken){
+char * GetClosingTokens(char openingToken){
     switch (openingToken) {
         case '(': return ")";
         case '[': return "]";
@@ -721,11 +772,11 @@ char * getClosingTokens(char openingToken){
  * @return Whether the token is an opening token
  */
 int isOpeningToken(char openingToken){
-    return strlen(getClosingTokens(openingToken)) != 0;
+    return strlen(GetClosingTokens(openingToken)) != 0;
 }
 
-int getClosingTokenPosition(const char * source, int initialTokenPosition){
-    return getClosingTokenPositionTokenOverride(source, initialTokenPosition, source[initialTokenPosition]);
+int GetClosingTokenPosition(const char * source, int initialTokenPosition){
+    return GetClosingTokenPositionTokenOverride(source, initialTokenPosition, source[initialTokenPosition]);
 }
 
 /**
@@ -734,10 +785,10 @@ int getClosingTokenPosition(const char * source, int initialTokenPosition){
  * @param initialTokenPosition The opening token position
  * @return The closing token position
  */
-int getClosingTokenPositionTokenOverride(const char * source, int initialTokenPosition, char initialToken){
+int GetClosingTokenPositionTokenOverride(const char * source, int initialTokenPosition, char initialToken){
     // Step 1: Determine the closing token
     char openingToken = initialToken;
-    char * closingTokens = getClosingTokens(openingToken);
+    char * closingTokens = GetClosingTokens(openingToken);
 
     if (strlen(closingTokens) == 0) return initialTokenPosition;
 
@@ -751,7 +802,7 @@ int getClosingTokenPositionTokenOverride(const char * source, int initialTokenPo
         }
 
         if (isOpeningToken(source[i])){
-            i = getClosingTokenPosition(source, i);
+            i = GetClosingTokenPosition(source, i);
             continue;
         }
     }
@@ -768,7 +819,7 @@ int getClosingTokenPositionTokenOverride(const char * source, int initialTokenPo
  * @param acceptedChars All chars we can go over without tripping. Empty means all chars are allowed.
  * @return
  */
-int getNextTokenPosition(const char * source, int initialPosition, const char token, const char * acceptedChars){
+int GetNextTokenPosition(const char * source, int initialPosition, const char token, const char * acceptedChars){
     for(int i=initialPosition+1; i< strlen(source); ++i){
         // Tripping check
         if(strlen(acceptedChars) >= 0){
@@ -807,7 +858,7 @@ char * insertIntAtFunctionCall(char * source, int * sourceSize, const char * fun
     //TODO a less naive function for edge-cases ?
     unsigned long functionCallPosition = strstrPos(source, functionName);
     while(functionCallPosition != 0){
-        int openingTokenPosition = getNextTokenPosition(source, functionCallPosition + strlen(functionName), '(', " \n\r\t");
+        int openingTokenPosition = GetNextTokenPosition(source, functionCallPosition + strlen(functionName), '(', " \n\r\t");
         if (source[openingTokenPosition] == '('){
             // Function call found, determine the start and end of the argument
             int endArgPos = openingTokenPosition;
@@ -815,7 +866,7 @@ char * insertIntAtFunctionCall(char * source, int * sourceSize, const char * fun
 
             // Note the additional check to see we aren't at the end of a function
             for(int argCount=0; argCount<=argumentPosition && source[startArgPos] != ')'; ++argCount){
-                endArgPos = getClosingTokenPositionTokenOverride(source, endArgPos, ',');
+                endArgPos = GetClosingTokenPositionTokenOverride(source, endArgPos, ',');
                 if (argCount == argumentPosition){
                     // Argument found, insert the int(...)
                     source = InplaceReplaceByIndex(source, sourceSize, endArgPos, endArgPos-1, ")");
