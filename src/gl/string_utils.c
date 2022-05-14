@@ -57,6 +57,23 @@ char * InplaceReplaceByIndex(char* pBuffer, int* size, const int startIndex, con
     return pBuffer;
 }
 
+/**
+ * Insert the string at the index, pushing "every chars to the right"
+ * @param source The shader as a string
+ * @param sourceLength The ALLOCATED length of the shader
+ * @param insertPoint The index at which the string is inserted.
+ * @param insertedString The string to insert
+ * @return The shader as a string, maybe in a different memory location
+ */
+char * InplaceInsertByIndex(char * source, int *sourceLength, const int insertPoint, const char *insertedString){
+    int insertLength = strlen(insertedString);
+    source = ResizeIfNeeded(source, sourceLength, insertLength);
+    memmove(source + insertPoint + insertLength,  source + insertPoint, strlen(source) - insertPoint);
+    memcpy(source + insertPoint, insertedString, strlen(insertedString));
+
+    return source;
+}
+
 char* InplaceInsert(char* pBuffer, const char* S, char* master, int* size)
 {
     char* m = ResizeIfNeeded(master, size, strlen(S));

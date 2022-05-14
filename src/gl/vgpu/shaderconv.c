@@ -70,7 +70,7 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
     //printf("ADDING EXTENSIONS\n");
     int insertPoint = FindPositionAfterDirectives(source);
     //printf("INSERT POINT: %i\n", insertPoint);
-    source = InplaceReplaceByIndex(source, &sourceLength, insertPoint, insertPoint-1, "\n#extension GL_EXT_shader_non_constant_global_initializers : enable\n");
+    source = InplaceInsertByIndex(source, &sourceLength, insertPoint + 1, "#extension GL_EXT_shader_non_constant_global_initializers : enable\n");
 
     //printf("REPLACING mod OPERATORS");
     // No support for % operator, so we replace it
@@ -171,7 +171,7 @@ char * WrapFunction(char * source, int * sourceLength, char * functionName, char
     // If some calls got replaced, add the wrapper
     if(originalSize != strlen(source)){
         int insertPoint = FindPositionAfterDirectives(source);
-        source = InplaceReplaceByIndex(source, sourceLength, insertPoint, insertPoint-1, wrapperFunction);
+        source = InplaceInsertByIndex(source, sourceLength, insertPoint + 1, wrapperFunction);
     }
 
     return source;
@@ -247,7 +247,7 @@ char * CoerceIntToFloat(char * source, int * sourceLength){
         // Avoid version/line directives
         if(source[i] == '#' && (source[i + 1] == 'v' || source[i + 1] == 'l') ){
             // Look for the next line
-            while (source[i] != '\n'){
+            while (source[i] != '\n' && source[i] != '\0'){
                 i++;
             }
         }
@@ -279,7 +279,7 @@ char * CoerceIntToFloat(char * source, int * sourceLength){
         }
 
         // Now we know there is nothing related to the digit, turn it into a float
-        source = InplaceReplaceByIndex(source, sourceLength, i+1, i, ".0");
+        source = InplaceInsertByIndex(source, sourceLength, i+1, ".0");
     }
 
     // TODO Hacks for special built in values and typecasts ?
@@ -561,7 +561,7 @@ char * ReplaceGLFragColor(char * source, int * sourceLength){
     if(strstr(source, "gl_FragColor")){
         source = InplaceReplaceSimple(source, sourceLength, "gl_FragColor", "vgpu_FragColor");
         int insertPoint = FindPositionAfterDirectives(source);
-        source = InplaceReplaceByIndex(source, sourceLength, insertPoint, insertPoint-1, "\nout mediump vec4 vgpu_FragColor;\n");
+        source = InplaceInsertByIndex(source, sourceLength, insertPoint + 1, "out mediump vec4 vgpu_FragColor;\n");
     }
     return source;
 }
@@ -732,8 +732,54 @@ int FindPositionAfterVersion(char * source){
  * @return The shader as a string, maybe in a different memory location
  */
 char * ReplacePrecisionQualifiers(char * source, int * sourceLength){
+
+    // Step 1 is to remove any "precision" qualifiers
+    for(unsigned long currentPosition; (currentPosition=strstrPos(source, "precision "));){
+        // Once a qualifier is found, get to the end of the instruction and replace
+        int endPosition = GetNextTokenPosition(source, currentPosition, ';', "");
+        source = InplaceReplaceByIndex(source, sourceLength, currentPosition, endPosition,"");
+    }
+
+    // Step 2 is to insert precision qualifiers, even the ones we think are defaults, since there are defaults only for some types
+
+    int insertPoint = FindPositionAfterDirectives(source);
+    source = InplaceInsertByIndex(source, sourceLength, insertPoint + 1,
+                                   "precision mediump float;\n"
+                                   "precision lowp int;\n"
+                                   "precision lowp atomic_uint;\n"
+                                   "precision lowp sampler;\n"
+                                   "precision lowp samplerShadow;\n"
+                                   "precision lowp sampler2D;\n"
+                                   "precision lowp sampler3D;\n"
+                                   "precision lowp sampler2DShadow;\n"
+                                   "precision lowp samplerCubeShadow;\n"
+                                   "precision lowp sampler2DArray;\n"
+                                   "precision lowp sampler2DArrayShadow;\n"
+                                   "precision lowp samplerBuffer;\n"
+                                   "precision lowp samplerCubeArray;\n"
+                                   "precision lowp samplerCubeArrayShadow;\n"
+                                   "precision lowp sampler2DMS;\n"
+                                   "precision lowp sampler2DMSArray;\n"
+                                   "precision lowp samplerCube;\n"
+                                   "precision lowp image2D;\n"
+                                   "precision lowp image2DArray;\n"
+                                   "precision lowp image3D;\n"
+                                   "precision lowp imageCube;\n"
+                                   "precision lowp imageCubeArray;\n"
+                                   "precision lowp imageBuffer;\n"
+                                   "precision lowp imageCubeArray;\n"
+                                   "precision lowp texture2D;\n"
+                                   "precision lowp texture2DArray;\n"
+                                   "precision lowp texture2DMS;\n"
+                                   "precision lowp texture3D;\n"
+                                   "precision lowp textureCube;\n"
+                                   "precision lowp textureCubeArray;\n"
+                                   "precision lowp textureBuffer;\n");
+
+
+
     if (globals4es.vgpu_precision != 0){
-        char * target_precision = "";
+        char * target_precision;
         switch (globals4es.vgpu_precision) {
             case 1: target_precision = "highp"; break;
             case 2: target_precision = "mediump"; break;
@@ -818,7 +864,7 @@ int GetClosingTokenPositionTokenOverride(const char * source, int initialTokenPo
 int GetNextTokenPosition(const char * source, int initialPosition, const char token, const char * acceptedChars){
     for(int i=initialPosition+1; i< strlen(source); ++i){
         // Tripping check
-        if(strlen(acceptedChars) >= 0){
+        if(strlen(acceptedChars) > 0){
             for(int j=0; j< strlen(acceptedChars); ++j){
                 if (source[i] == acceptedChars[j]) break; // No tripping, continue
             }
@@ -865,9 +911,8 @@ char * insertIntAtFunctionCall(char * source, int * sourceSize, const char * fun
                 endArgPos = GetClosingTokenPositionTokenOverride(source, endArgPos, ',');
                 if (argCount == argumentPosition){
                     // Argument found, insert the int(...)
-                    source = InplaceReplaceByIndex(source, sourceSize, endArgPos, endArgPos-1, ")");
-                    source = InplaceReplaceByIndex(source, sourceSize, startArgPos+1, startArgPos, "int(");
-
+                    source = InplaceInsertByIndex(source, sourceSize, endArgPos+1, ")");
+                    source = InplaceInsertByIndex(source, sourceSize, startArgPos+1, "int(");
                     break;
                 }
                 // Not the arg we want, got to the next one

@@ -12,6 +12,7 @@ int CountString(const char* pBuffer, const char* S);
 char* ResizeIfNeeded(char* pBuffer, int *size, int addsize);
 char* InplaceReplace(char* pBuffer, int* size, const char* S, const char* D);
 char * InplaceReplaceByIndex(char* pBuffer, int* size, int startIndex, int endIndex, const char* replacement);
+char * InplaceInsertByIndex(char * source, int *sourceLength, int insertPoint, const char *insertedString);
 char* Append(char* pBuffer, int* size, const char* S);
 char* InplaceInsert(char* pBuffer, const char* S, char* master, int* size);
 char* GetLine(char* pBuffer, int num);
