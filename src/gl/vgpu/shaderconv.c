@@ -744,11 +744,7 @@ char * ReplacePrecisionQualifiers(char * source, int * sourceLength){
 
     int insertPoint = FindPositionAfterDirectives(source);
     source = InplaceInsertByIndex(source, sourceLength, insertPoint,
-                                   "\nprecision mediump float;\n"
-                                   "precision lowp int;\n"
-                                   "precision lowp atomic_uint;\n"
-                                   "precision lowp sampler;\n"
-                                   "precision lowp samplerShadow;\n"
+                                   "\nprecision lowp float;\n"
                                    "precision lowp sampler2D;\n"
                                    "precision lowp sampler3D;\n"
                                    "precision lowp sampler2DShadow;\n"
@@ -767,14 +763,7 @@ char * ReplacePrecisionQualifiers(char * source, int * sourceLength){
                                    "precision lowp imageCube;\n"
                                    "precision lowp imageCubeArray;\n"
                                    "precision lowp imageBuffer;\n"
-                                   "precision lowp imageCubeArray;\n"
-                                   "precision lowp texture2D;\n"
-                                   "precision lowp texture2DArray;\n"
-                                   "precision lowp texture2DMS;\n"
-                                   "precision lowp texture3D;\n"
-                                   "precision lowp textureCube;\n"
-                                   "precision lowp textureCubeArray;\n"
-                                   "precision lowp textureBuffer;\n");
+                                   "precision lowp imageCubeArray;\n");
 
 
 
