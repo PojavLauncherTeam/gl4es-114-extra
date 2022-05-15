@@ -173,7 +173,7 @@ char* ResizeIfNeeded(char* pBuffer, int *size, int addsize) {
     char* p = pBuffer;
     int newsize = strlen(pBuffer)+addsize+1;
     if (newsize>*size) {
-        newsize += 100;
+        //newsize += 100;
         p = (char*)realloc(pBuffer, newsize);
         *size=newsize;
     }
