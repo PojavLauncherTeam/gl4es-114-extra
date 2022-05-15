@@ -70,7 +70,7 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
     //printf("ADDING EXTENSIONS\n");
     int insertPoint = FindPositionAfterDirectives(source);
     //printf("INSERT POINT: %i\n", insertPoint);
-    source = InplaceInsertByIndex(source, &sourceLength, insertPoint + 1, "#extension GL_EXT_shader_non_constant_global_initializers : enable\n");
+    source = InplaceInsertByIndex(source, &sourceLength, insertPoint, "\n#extension GL_EXT_shader_non_constant_global_initializers : enable");
 
     //printf("REPLACING mod OPERATORS");
     // No support for % operator, so we replace it
@@ -734,7 +734,7 @@ int FindPositionAfterVersion(char * source){
 char * ReplacePrecisionQualifiers(char * source, int * sourceLength){
 
     // Step 1 is to remove any "precision" qualifiers
-    for(unsigned long currentPosition; (currentPosition=strstrPos(source, "precision "));){
+    for(unsigned long currentPosition=strstrPos(source, "precision "); currentPosition>0;currentPosition=strstrPos(source, "precision ")){
         // Once a qualifier is found, get to the end of the instruction and replace
         int endPosition = GetNextTokenPosition(source, currentPosition, ';', "");
         source = InplaceReplaceByIndex(source, sourceLength, currentPosition, endPosition,"");
@@ -743,8 +743,8 @@ char * ReplacePrecisionQualifiers(char * source, int * sourceLength){
     // Step 2 is to insert precision qualifiers, even the ones we think are defaults, since there are defaults only for some types
 
     int insertPoint = FindPositionAfterDirectives(source);
-    source = InplaceInsertByIndex(source, sourceLength, insertPoint + 1,
-                                   "precision mediump float;\n"
+    source = InplaceInsertByIndex(source, sourceLength, insertPoint,
+                                   "\nprecision mediump float;\n"
                                    "precision lowp int;\n"
                                    "precision lowp atomic_uint;\n"
                                    "precision lowp sampler;\n"
