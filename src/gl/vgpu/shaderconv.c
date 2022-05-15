@@ -67,9 +67,7 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
 
     // OpenGL natively supports non const global initializers, not OPENGL ES except if we add an extension
     //printf("ADDING EXTENSIONS\n");
-    int insertPoint = FindPositionAfterDirectives(source);
-    //printf("INSERT POINT: %i\n", insertPoint);
-    source = InplaceInsertByIndex(source, &sourceLength, insertPoint, "\n#extension GL_EXT_shader_non_constant_global_initializers : enable");
+    source = InsertExtensions(source, &sourceLength);
 
     //printf("REPLACING mod OPERATORS");
     // No support for % operator, so we replace it
@@ -117,6 +115,24 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
     return source;
 }
 
+char * InsertExtensions(char *source, int *sourceLength){
+    int insertPoint = FindPositionAfterDirectives(source);
+    //printf("INSERT POINT: %i\n", insertPoint);
+
+    source = InsertExtension(source, sourceLength, insertPoint+1, "GL_EXT_shader_non_constant_global_initializers");
+    source = InsertExtension(source, sourceLength, insertPoint+1, "GL_EXT_texture_cube_map_array");
+    source = InsertExtension(source, sourceLength, insertPoint+1, "GL_EXT_texture_buffer");
+    source = InsertExtension(source, sourceLength, insertPoint+1, "GL_OES_texture_storage_multisample_2d_array");
+    return source;
+}
+
+char * InsertExtension(char * source, int * sourceLength, const int insertPoint, const char * extension){
+    // First, insert the model, then the extension
+    source = InplaceInsertByIndex(source, sourceLength, insertPoint, "#ifdef __EXT__ \n#extension __EXT__ : enable\n#endif\n");
+    source = InplaceReplaceSimple(source, sourceLength, "__EXT__", extension);
+    return source;
+}
+
 int doesShaderVersionContainsES(const char * source){
     if(FindString(source, "#version 300 es") || FindString(source, "#version 310 es") || FindString(source, "#version 320 es")){
         return 1;
@@ -128,22 +144,32 @@ char * WrapIvecFunctions(char * source, int * sourceLength){
     source = WrapFunction(source, sourceLength, "texelFetch", "vgpu_texelFetch", "\nvec4 vgpu_texelFetch(sampler2D sampler, vec2 P, float lod){return texelFetch(sampler, ivec2(int(P.x), int(P.y)), int(lod));}\n"
                                                                                  "vec4 vgpu_texelFetch(sampler3D sampler, vec3 P, float lod){return texelFetch(sampler, ivec3(int(P.x), int(P.y), int(P.z)), int(lod));}\n"
                                                                                  "vec4 vgpu_texelFetch(sampler2DArray sampler, vec3 P, float lod){return texelFetch(sampler, ivec3(int(P.x), int(P.y), int(P.z)), int(lod));}\n"
+                                                                                 "#ifdef GL_EXT_texture_buffer\n"
                                                                                  "vec4 vgpu_texelFetch(samplerBuffer sampler, float P){return texelFetch(sampler, int(P));}\n"
+                                                                                 "#endif\n"
                                                                                  "vec4 vgpu_texelFetch(sampler2DMS sampler, vec2 P, float _sample){return texelFetch(sampler, ivec2(int(P.x), int(P.y)), int(_sample));}\n"
-                                                                                 "vec4 vgpu_texelFetch(sampler2DMSArray sampler, vec3 P, float _sample){return texelFetch(sampler, ivec3(int(P.x), int(P.y), int(P.z)), int(_sample));}");
+                                                                                 "#ifdef GL_OES_texture_storage_multisample_2d_array\n"
+                                                                                 "vec4 vgpu_texelFetch(sampler2DMSArray sampler, vec3 P, float _sample){return texelFetch(sampler, ivec3(int(P.x), int(P.y), int(P.z)), int(_sample));}\n"
+                                                                                 "#endif\n");
 
     source = WrapFunction(source, sourceLength, "textureSize", "vgpu_textureSize", "\nvec2 vgpu_textureSize(sampler2D sampler, float lod){ivec2 size = textureSize(sampler, int(lod));return vec2(size.x, size.y);}\n"
                                                                                    "vec3 vgpu_textureSize(sampler3D sampler, float lod){ivec3 size = textureSize(sampler, int(lod));return vec3(size.x, size.y, size.z);}\n"
                                                                                    "vec2 vgpu_textureSize(samplerCube sampler, float lod){ivec2 size = textureSize(sampler, int(lod));return vec2(size.x, size.y);}\n"
                                                                                    "vec2 vgpu_textureSize(sampler2DShadow sampler, float lod){ivec2 size = textureSize(sampler, int(lod));return vec2(size.x, size.y);}\n"
                                                                                    "vec2 vgpu_textureSize(samplerCubeShadow sampler, float lod){ivec2 size = textureSize(sampler, int(lod));return vec2(size.x, size.y);}\n"
+                                                                                   "#ifdef GL_EXT_texture_cube_map_array\n"
                                                                                    "vec3 vgpu_textureSize(samplerCubeArray sampler, float lod){ivec3 size = textureSize(sampler, int(lod));return vec3(size.x, size.y, size.z);}\n"
                                                                                    "vec3 vgpu_textureSize(samplerCubeArrayShadow sampler, float lod){ivec3 size = textureSize(sampler, int(lod));return vec3(size.x, size.y, size.z);}\n"
+                                                                                   "#endif\n"
                                                                                    "vec3 vgpu_textureSize(sampler2DArray sampler, float lod){ivec3 size = textureSize(sampler, int(lod));return vec3(size.x, size.y, size.z);}\n"
                                                                                    "vec3 vgpu_textureSize(sampler2DArrayShadow sampler, float lod){ivec3 size = textureSize(sampler, int(lod));return vec3(size.x, size.y, size.z);}\n"
+                                                                                   "#ifdef GL_EXT_texture_buffer\n"
                                                                                    "float vgpu_textureSize(samplerBuffer sampler){return float(textureSize(sampler));}\n"
+                                                                                   "#endif\n"
                                                                                    "vec2 vgpu_textureSize(sampler2DMS sampler){ivec2 size = textureSize(sampler);return vec2(size.x, size.y);}\n"
-                                                                                   "vec3 vgpu_textureSize(sampler2DMSArray sampler){ivec3 size = textureSize(sampler);return vec3(size.x, size.y, size.z);}\n");
+                                                                                   "#ifdef GL_OES_texture_storage_multisample_2d_array\n"
+                                                                                   "vec3 vgpu_textureSize(sampler2DMSArray sampler){ivec3 size = textureSize(sampler);return vec3(size.x, size.y, size.z);}\n"
+                                                                                   "#endif\n");
 
     source = WrapFunction(source, sourceLength, "textureOffset", "vgpu_textureOffset", "\nvec4 vgpu_textureOffset(sampler2D sampler, vec2 P, vec2 offset){return textureOffset(sampler, P, ivec2(int(offset.x), int(offset.y)));}\n"
                                                                                        "vec4 vgpu_textureOffset(sampler2D sampler, vec2 P, vec2 offset, float bias){return textureOffset(sampler, P, ivec2(int(offset.x), int(offset.y)), bias);}\n"
@@ -753,19 +779,24 @@ char * ReplacePrecisionQualifiers(char * source, int * sourceLength){
                                    "precision lowp samplerCubeShadow;\n"
                                    "precision lowp sampler2DArray;\n"
                                    "precision lowp sampler2DArrayShadow;\n"
-                                   "precision lowp samplerBuffer;\n"
-                                   "precision lowp samplerCubeArray;\n"
-                                   "precision lowp samplerCubeArrayShadow;\n"
                                    "precision lowp sampler2DMS;\n"
-                                   "precision lowp sampler2DMSArray;\n"
                                    "precision lowp samplerCube;\n"
                                    "precision lowp image2D;\n"
                                    "precision lowp image2DArray;\n"
                                    "precision lowp image3D;\n"
                                    "precision lowp imageCube;\n"
-                                   "precision lowp imageCubeArray;\n"
+                                   "#ifdef GL_EXT_texture_buffer\n"
+                                   "precision lowp samplerBuffer;\n"
                                    "precision lowp imageBuffer;\n"
-                                   "precision lowp imageCubeArray;\n");
+                                   "#endif\n"
+                                   "#ifdef GL_EXT_texture_cube_map_array\n"
+                                   "precision lowp imageCubeArray;\n"
+                                   "precision lowp samplerCubeArray;\n"
+                                   "precision lowp samplerCubeArrayShadow;\n"
+                                   "#endif\n"
+                                   "#ifdef GL_OES_texture_storage_multisample_2d_array\n"
+                                   "precision lowp sampler2DMSArray;\n"
+                                   "#endif\n");
 
 
 

@@ -32,6 +32,8 @@ int GetClosingTokenPositionTokenOverride(const char * source, int initialTokenPo
 int GetNextTokenPosition(const char * source, int initialPosition, const char token, const char * acceptedChars);
 unsigned long strstrPos(const char * haystack, const char * needle);
 char * insertIntAtFunctionCall(char * source, int * sourceSize, const char * functionName, int argumentPosition);
+char * InsertExtension(char * source, int * sourceLength, int insertPoint, const char * extension);
+char * InsertExtensions(char *source, int *sourceLength);
 
 
 char* GetOperandFromOperator(char* source, int operatorIndex, int rightOperand, int * limit);
