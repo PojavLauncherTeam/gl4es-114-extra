@@ -68,8 +68,8 @@ char * InplaceReplaceByIndex(char* pBuffer, int* size, const int startIndex, con
 char * InplaceInsertByIndex(char * source, int *sourceLength, const int insertPoint, const char *insertedString){
     int insertLength = strlen(insertedString);
     source = ResizeIfNeeded(source, sourceLength, insertLength);
-    memmove(source + insertPoint + insertLength,  source + insertPoint, strlen(source) - insertPoint);
-    memcpy(source + insertPoint, insertedString, strlen(insertedString));
+    memmove(source + insertPoint + insertLength,  source + insertPoint, strlen(source) - insertPoint + 1);
+    memcpy(source + insertPoint, insertedString, insertLength);
 
     return source;
 }
