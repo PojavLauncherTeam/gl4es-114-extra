@@ -547,7 +547,7 @@ char * ReplaceGLFragData(char * source, int * sourceLength){
 
         // And place them into the shader
         source = InplaceReplaceSimple(source, sourceLength, &needle[0], &replacement[0]);
-        source = InplaceReplaceByIndex(source, sourceLength, insertPoint, insertPoint-1, &replacementLine[0]);
+        source = InplaceInsertByIndex(source, sourceLength, insertPoint + 1, &replacementLine[0]);
     }
     return source;
 }
