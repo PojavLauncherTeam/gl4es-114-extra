@@ -45,8 +45,7 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
     //source = ReplaceVariableName(source, &sourceLength, "const", " ");
 
 
-    //printf("FUCKING UP PRECISION");
-    source = ReplacePrecisionQualifiers(source, &sourceLength);
+
 
     // Avoid keyword clash with gl4es #define blocks
     //printf("REPLACING KEYWORDS");
@@ -107,6 +106,9 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
         //printf("REPLACING FRAG COLOR");
         source = ReplaceGLFragColor(source, &sourceLength);
     }
+
+    //printf("FUCKING UP PRECISION");
+    source = ReplacePrecisionQualifiers(source, &sourceLength);
 
     if (globals4es.vgpu_dump){
         printf("New VGPU Shader conversion:\n%s\n", source);
