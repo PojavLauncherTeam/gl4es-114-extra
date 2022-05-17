@@ -912,6 +912,7 @@ void realize_textures(int drawing) {
 }
 
 //Direct wrapper
+/*
 void glBindTexture(GLenum target, GLuint texture) AliasExport("gl4es_glBindTexture");
 void glGenTextures(GLsizei n, GLuint * textures) AliasExport("gl4es_glGenTextures");
 void glDeleteTextures(GLsizei n, const GLuint * textures) AliasExport("gl4es_glDeleteTextures");
@@ -924,6 +925,7 @@ GLboolean glAreTexturesResident(GLsizei n, const GLuint *textures, GLboolean *re
 void glActiveTexture( GLenum texture ) AliasExport("gl4es_glActiveTexture");
 void glClientActiveTexture( GLenum texture ) AliasExport("gl4es_glClientActiveTexture");
 void glPixelStorei(GLenum pname, GLint param) AliasExport("gl4es_glPixelStorei");
+*/
 
 //ARB mapper
 void glActiveTextureARB(GLenum texture) AliasExport("gl4es_glActiveTexture");

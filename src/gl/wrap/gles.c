@@ -190,7 +190,7 @@ void gl4es_glClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf al
 #endif
     gles_glClearColor(red, green, blue, alpha);
 }
-void glClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) AliasExport("gl4es_glClearColor");
+//void glClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) AliasExport("gl4es_glClearColor");
 #endif
 #ifndef skip_glClearColorx
 void gl4es_glClearColorx(GLclampx red, GLclampx green, GLclampx blue, GLclampx alpha) {
@@ -850,7 +850,7 @@ void gl4es_glGetBooleanv(GLenum pname, GLboolean * params) {
 #endif
     gles_glGetBooleanv(pname, params);
 }
-void glGetBooleanv(GLenum pname, GLboolean * params) AliasExport("gl4es_glGetBooleanv");
+//void glGetBooleanv(GLenum pname, GLboolean * params) AliasExport("gl4es_glGetBooleanv");
 #endif
 #ifndef skip_glGetBufferParameteriv
 void gl4es_glGetBufferParameteriv(GLenum target, GLenum pname, GLint * params) {
@@ -1360,7 +1360,7 @@ void gl4es_glLineWidth(GLfloat width) {
 #endif
     gles_glLineWidth(width);
 }
-void glLineWidth(GLfloat width) AliasExport("gl4es_glLineWidth");
+//void glLineWidth(GLfloat width) AliasExport("gl4es_glLineWidth");
 #endif
 #ifndef skip_glLineWidthx
 void gl4es_glLineWidthx(GLfixed width) {
@@ -1670,7 +1670,7 @@ void gl4es_glPolygonOffset(GLfloat factor, GLfloat units) {
 #endif
     gles_glPolygonOffset(factor, units);
 }
-void glPolygonOffset(GLfloat factor, GLfloat units) AliasExport("gl4es_glPolygonOffset");
+//void glPolygonOffset(GLfloat factor, GLfloat units) AliasExport("gl4es_glPolygonOffset");
 #endif
 #ifndef skip_glPolygonOffsetx
 void gl4es_glPolygonOffsetx(GLfixed factor, GLfixed units) {

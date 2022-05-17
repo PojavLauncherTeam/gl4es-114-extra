@@ -11,7 +11,7 @@ void gl4es_glPointParameteri(GLenum pname, GLint param)
 {
     gl4es_glPointParameterf(pname, param);
 }
-void glPointParameteri(GLenum pname, GLint param) AliasExport("gl4es_glPointParameteri");
+//void glPointParameteri(GLenum pname, GLint param) AliasExport("gl4es_glPointParameteri");
 
 void gl4es_glPointParameteriv(GLenum pname, const GLint * params)
 {
@@ -20,13 +20,13 @@ void gl4es_glPointParameteriv(GLenum pname, const GLint * params)
     for (int i=0; i<v; i++) tmp[i] = params[i];
     gl4es_glPointParameterfv(pname, tmp);
 }
-void glPointParameteriv(GLenum pname, const GLint * params) AliasExport("gl4es_glPointParameteriv");
+//void glPointParameteriv(GLenum pname, const GLint * params) AliasExport("gl4es_glPointParameteriv");
 
 void gl4es_glPointParameterf(GLenum pname, GLfloat param) {
     PUSH_IF_COMPILING(glPointParameterf);
     gl4es_glPointParameterfv(pname, &param);
 }
-void glPointParameterf(GLenum pname, GLfloat param) AliasExport("gl4es_glPointParameterf");
+//void glPointParameterf(GLenum pname, GLfloat param) AliasExport("gl4es_glPointParameterf");
 void glPointParameterfARB(GLenum pname, GLfloat param) AliasExport("gl4es_glPointParameterf");
 void glPointParameterfEXT(GLenum pname, GLfloat param) AliasExport("gl4es_glPointParameterf");
 
@@ -112,7 +112,7 @@ void gl4es_glPointParameterfv(GLenum pname, const GLfloat * params)
     errorGL();
     gles_glPointParameterfv(pname, params);
 }
-void glPointParameterfv(GLenum pname, const GLfloat * params) AliasExport("gl4es_glPointParameterfv");
+//void glPointParameterfv(GLenum pname, const GLfloat * params) AliasExport("gl4es_glPointParameterfv");
 void glPointParameterfvARB(GLenum pname, const GLfloat * params) AliasExport("gl4es_glPointParameterfv");
 void glPointParameterfvEXT(GLenum pname, const GLfloat * params) AliasExport("gl4es_glPointParameterfv");
 
@@ -126,4 +126,4 @@ void gl4es_glPointSize(GLfloat size) {
     LOAD_GLES_FPE(glPointSize);
     gles_glPointSize(size);
 }
-void glPointSize(GLfloat size) AliasExport("gl4es_glPointSize");
+//void glPointSize(GLfloat size) AliasExport("gl4es_glPointSize");

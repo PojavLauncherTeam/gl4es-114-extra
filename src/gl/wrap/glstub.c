@@ -13,6 +13,12 @@ ret gl4es_ ## def args {\
 } \
 ret def args AliasExport("gl4es_"#def);
 
+#define STUB_NO_DEF(ret, def, args)\
+ret gl4es_ ## def args {\
+    if(IsEnvVarTrue("LIBGL_DEBUG"))\
+        printf("stub: %s;\n", #def);\
+}
+
 /*STUB(void,glFogCoordd,(GLdouble coord));
 STUB(void,glFogCoordf,(GLfloat coord));
 STUB(void,glFogCoorddv,(const GLdouble *coord));
@@ -28,11 +34,11 @@ STUB(void glBlendFuncSeparatei(GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum 
 STUB(void,glClearAccum,(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha));
 //STUB(void,glColorMaterial,(GLenum face, GLenum mode));
 STUB(void,glCopyPixels,(GLint x, GLint y, GLsizei width, GLsizei height, GLenum type));
-STUB(void,glDrawBuffer,(GLenum mode));
+STUB_NO_DEF(void,glDrawBuffer,(GLenum mode));
 STUB(void,glEdgeFlag,(GLboolean flag));
 STUB(void,glIndexf,(GLfloat c));
 STUB(void,glPolygonStipple,(const GLubyte *mask));
-STUB(void,glReadBuffer,(GLenum mode));
+STUB_NO_DEF(void,glReadBuffer,(GLenum mode));
 //STUB(void glSecondaryColor3f(GLfloat r, GLfloat g, GLfloat b));
 STUB(void,glColorTable,(GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, const GLvoid *table));
 

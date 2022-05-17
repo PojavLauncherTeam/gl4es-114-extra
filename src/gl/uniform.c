@@ -740,6 +740,7 @@ const char* GetUniformName(program_t *glprogram, GLint location)
     return m->name;
 }
 
+/*
 void glGetUniformfv(GLuint program, GLint location, GLfloat *params) AliasExport("gl4es_glGetUniformfv");
 void glGetUniformiv(GLuint program, GLint location, GLint *params) AliasExport("gl4es_glGetUniformiv");
 void glUniform1f(GLint location, GLfloat v0) AliasExport("gl4es_glUniform1f");
@@ -761,6 +762,7 @@ void glUniform4iv(GLint location, GLsizei count, const GLint *value) AliasExport
 void glUniformMatrix2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) AliasExport("gl4es_glUniformMatrix2fv");
 void glUniformMatrix3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) AliasExport("gl4es_glUniformMatrix3fv");
 void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) AliasExport("gl4es_glUniformMatrix4fv");
+*/
 
 // ============ GL_ARB_shader_objects ================
 

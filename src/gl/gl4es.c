@@ -980,7 +980,7 @@ void gl4es_glPolygonMode(GLenum face, GLenum mode) {
 			glstate->polygon_mode = 0;
 	}
 }
-void glPolygonMode(GLenum face, GLenum mode) AliasExport("gl4es_glPolygonMode");
+//void glPolygonMode(GLenum face, GLenum mode) AliasExport("gl4es_glPolygonMode");
 
 
 void gl4es_flush() {
@@ -1016,7 +1016,7 @@ void gl4es_glFlush() {
         BlitEmulatedPixmap();
 #endif
 }
-void glFlush() AliasExport("gl4es_glFlush");
+//void glFlush() AliasExport("gl4es_glFlush");
 
 void gl4es_glFinish() {
 	LOAD_GLES(glFinish);
@@ -1028,7 +1028,7 @@ void gl4es_glFinish() {
     gles_glFinish();
     errorGL();
 }
-void glFinish() AliasExport("gl4es_glFinish");
+//void glFinish() AliasExport("gl4es_glFinish");
 
 void gl4es_glIndexPointer(GLenum type, GLsizei stride, const GLvoid * pointer) {
     static bool warning = false;
@@ -1104,7 +1104,7 @@ void gl4es_glLogicOp(GLenum opcode) {
         gles_glLogicOp(opcode);
     }
 }
-void glLogicOp(GLenum opcode) AliasExport("gl4es_glLogicOp");
+//void glLogicOp(GLenum opcode) AliasExport("gl4es_glLogicOp");
 
 void gl4es_glColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha) {
     PUSH_IF_COMPILING(glColorMask);
@@ -1119,7 +1119,7 @@ void gl4es_glColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean
     LOAD_GLES(glColorMask);
     gles_glColorMask(red, green, blue, alpha);
 }
-void glColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha) AliasExport("gl4es_glColorMask");
+//void glColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha) AliasExport("gl4es_glColorMask");
 
 void gl4es_glClear(GLbitfield mask) {
     PUSH_IF_COMPILING(glClear);
@@ -1128,7 +1128,7 @@ void gl4es_glClear(GLbitfield mask) {
     LOAD_GLES(glClear);
     gles_glClear(mask);
 }
-void glClear(GLbitfield mask) AliasExport("gl4es_glClear");
+//void glClear(GLbitfield mask) AliasExport("gl4es_glClear");
 
 void gl4es_glClampColor(GLenum target, GLenum clamp)
 {
@@ -1141,7 +1141,7 @@ void gl4es_glClampColor(GLenum target, GLenum clamp)
         errorShim(GL_INVALID_ENUM);
     }
 }
-void glClampColor(GLenum target, GLenum clamp) AliasExport("gl4es_glClampColor");
+//void glClampColor(GLenum target, GLenum clamp) AliasExport("gl4es_glClampColor");
 
 void gl4es_scratch(int alloc) {
     if(glstate->scratch_alloc<alloc) {

@@ -9,7 +9,9 @@
     if (strcmp(name, func_name) == 0) return (void *)func;
 #endif
 
-#define EX(func_name) MAP(#func_name, func_name)
+#define EX(func_name) MAP(#func_name, func_name)        \
+						MAP(#func_name "ARB", func_name) \
+						MAP(#func_name "EXT", func_name)
 
 #define ARB(func_name) MAP(#func_name "ARB", func_name)
 

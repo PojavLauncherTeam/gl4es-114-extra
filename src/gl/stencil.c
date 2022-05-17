@@ -5,6 +5,7 @@
 #include "gl4es.h"
 #include "glstate.h"
 #include "loader.h"
+#include "vgpu/pack/pack.h"
 
 void gl4es_glStencilMask(GLuint mask) {
     if(!glstate->list.pending) 
@@ -19,7 +20,7 @@ void gl4es_glStencilMask(GLuint mask) {
     errorGL();
     gles_glStencilMask(mask);
 }
-void glStencilMask(GLuint mask) AliasExport("gl4es_glStencilMask");
+//void glStencilMask(GLuint mask) AliasExport("gl4es_glStencilMask");
 
 void gl4es_glStencilMaskSeparate(GLenum face, GLuint mask) {
     if(face!=GL_FRONT && face!=GL_BACK && face!=GL_FRONT_AND_BACK) {
@@ -51,7 +52,7 @@ void gl4es_glStencilMaskSeparate(GLenum face, GLuint mask) {
             noerrorShim();
     }
 }
-void glStencilMaskSeparate(GLenum face, GLuint mask) AliasExport("gl4es_glStencilMaskSeparate");
+//void glStencilMaskSeparate(GLenum face, GLuint mask) AliasExport("gl4es_glStencilMaskSeparate");
 
 void gl4es_glStencilFunc(GLenum func, GLint ref, GLuint mask) {
     if(!glstate->list.pending) 
@@ -70,7 +71,7 @@ void gl4es_glStencilFunc(GLenum func, GLint ref, GLuint mask) {
     glstate->stencil.f_mask[0] = glstate->stencil.f_mask[1] = mask;
     gles_glStencilFunc(func, ref, mask);
 }
-void glStencilFunc(GLenum func, GLint ref, GLuint mask) AliasExport("gl4es_glStencilFunc");
+//void glStencilFunc(GLenum func, GLint ref, GLuint mask) AliasExport("gl4es_glStencilFunc");
 
 void gl4es_glStencilFuncSeparate(GLenum face, GLenum func, GLint ref, GLuint mask) {
     if(face!=GL_FRONT && face!=GL_BACK && face!=GL_FRONT_AND_BACK) {
@@ -105,7 +106,7 @@ void gl4es_glStencilFuncSeparate(GLenum face, GLenum func, GLint ref, GLuint mas
             noerrorShim();
     }
 }
-void glStencilFuncSeparate(GLenum face, GLenum func, GLint ref, GLuint mask) AliasExport("gl4es_glStencilFuncSeparate");
+//void glStencilFuncSeparate(GLenum face, GLenum func, GLint ref, GLuint mask) AliasExport("gl4es_glStencilFuncSeparate");
 
 void gl4es_glStencilOp(GLenum fail, GLenum zfail, GLenum zpass) {
     if(!glstate->list.pending) 
@@ -124,7 +125,7 @@ void gl4es_glStencilOp(GLenum fail, GLenum zfail, GLenum zpass) {
     errorGL();
     gles_glStencilOp(fail, zfail, zpass);
 }
-void glStencilOp(GLenum fail, GLenum zfail, GLenum zpass) AliasExport("gl4es_glStencilOp");
+//void glStencilOp(GLenum fail, GLenum zfail, GLenum zpass) AliasExport("gl4es_glStencilOp");
 
 void gl4es_glStencilOpSeparate(GLenum face, GLenum sfail, GLenum zfail, GLenum zpass) {
     if(face!=GL_FRONT && face!=GL_BACK && face!=GL_FRONT_AND_BACK) {
@@ -158,7 +159,7 @@ void gl4es_glStencilOpSeparate(GLenum face, GLenum sfail, GLenum zfail, GLenum z
             noerrorShim();
     }
 }
-void glStencilOpSeparate(GLenum face, GLenum sfail, GLenum zfail, GLenum zpass) AliasExport("gl4es_glStencilOpSeparate");
+//void glStencilOpSeparate(GLenum face, GLenum sfail, GLenum zfail, GLenum zpass) AliasExport("gl4es_glStencilOpSeparate");
 
 void gl4es_glClearStencil(GLint s) {
     if(!glstate->list.pending) 
@@ -173,4 +174,4 @@ void gl4es_glClearStencil(GLint s) {
     errorGL();
     gles_glClearStencil(s);
 }
-void glClearStencil(GLint s) AliasExport("gl4es_glClearStencil");
+//void glClearStencil(GLint s) AliasExport("gl4es_glClearStencil");

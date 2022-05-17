@@ -285,7 +285,7 @@ void gl4es_glEnable(GLenum cap) {
     LOAD_GLES(glEnable);
     proxy_glEnable(cap, true, gles_glEnable);
 }
-void glEnable(GLenum cap) AliasExport("gl4es_glEnable");
+//void glEnable(GLenum cap) AliasExport("gl4es_glEnable");
 
 void gl4es_glDisable(GLenum cap) {
     DBG(printf("glDisable(%s), glstate->list.pending=%d\n", PrintEnum(cap), glstate->list.pending);)
@@ -306,7 +306,7 @@ void gl4es_glDisable(GLenum cap) {
     LOAD_GLES(glDisable);
     proxy_glEnable(cap, false, gles_glDisable);
 }
-void glDisable(GLenum cap) AliasExport("gl4es_glDisable");
+//void glDisable(GLenum cap) AliasExport("gl4es_glDisable");
 
 void gl4es_glEnableClientState(GLenum cap) {
     DBG(printf("glEnableClientState(%s), list.begin=%dn", PrintEnum(cap), glstate->list.begin);)
@@ -423,4 +423,4 @@ GLboolean gl4es_glIsEnabled(GLenum cap) {
 }
 #undef isenabled
 #undef clientisenabled
-GLboolean glIsEnabled(GLenum cap) AliasExport("gl4es_glIsEnabled");
+//GLboolean glIsEnabled(GLenum cap) AliasExport("gl4es_glIsEnabled");

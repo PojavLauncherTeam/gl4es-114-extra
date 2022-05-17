@@ -666,6 +666,7 @@ void gl4es_glFlushMappedBufferRange(GLenum target, GLintptr offset, GLsizeiptr l
 
 
 //Direct wrapper
+/*
 void glGenBuffers(GLsizei n, GLuint * buffers) AliasExport("gl4es_glGenBuffers");
 void glBindBuffer(GLenum target, GLuint buffer) AliasExport("gl4es_glBindBuffer");
 void glBufferData(GLenum target, GLsizeiptr size, const GLvoid * data, GLenum usage) AliasExport("gl4es_glBufferData");
@@ -680,6 +681,7 @@ void glGetBufferPointerv(GLenum target, GLenum pname, GLvoid ** params) AliasExp
 
 void *glMapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access) AliasExport("gl4es_glMapBufferRange");
 void glFlushMappedBufferRange(GLenum target, GLintptr offset, GLsizeiptr length) AliasExport("gl4es_glFlushMappedBufferRange");
+*/
 
 //ARB wrapper
 #ifndef AMIGAOS4
@@ -830,8 +832,10 @@ void VaoInit(glvao_t *vao) {
 }
 
 //Direct wrapper
+/*
 void glGenVertexArrays(GLsizei n, GLuint *arrays) AliasExport("gl4es_glGenVertexArrays");
 void glBindVertexArray(GLuint array) AliasExport("gl4es_glBindVertexArray");
 void glDeleteVertexArrays(GLsizei n, const GLuint *arrays) AliasExport("gl4es_glDeleteVertexArrays");
 GLboolean glIsVertexArray(GLuint array) AliasExport("gl4es_glIsVertexArray");
+*/
 

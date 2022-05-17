@@ -21,10 +21,11 @@ void gl4es_glBlendColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf al
         }
     }
 }
+/*
 void glBlendColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) AliasExport("gl4es_glBlendColor");
 void glBlendColorEXT(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) AliasExport("gl4es_glBlendColor");
 void glBlendColorARB(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) AliasExport("gl4es_glBlendColor");
-
+*/
 void gl4es_glBlendFuncSeparate(GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha)
 {
     if(!glstate->list.pending) 
@@ -57,8 +58,10 @@ void gl4es_glBlendFuncSeparate(GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfac
     glstate->blendsfactoralpha = sfactorAlpha;
     glstate->blenddfactoralpha = dfactorAlpha;
 }
+/*
 void glBlendFuncSeparate(GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha) AliasExport("gl4es_glBlendFuncSeparate");
 void glBlendFuncSeparateEXT (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha) AliasExport("gl4es_glBlendFuncSeparate");
+*/
 
 void gl4es_glBlendEquationSeparate(GLenum modeRGB, GLenum modeA) {
     PUSH_IF_COMPILING(glBlendEquationSeparate);
@@ -68,8 +71,10 @@ void gl4es_glBlendEquationSeparate(GLenum modeRGB, GLenum modeA) {
 #endif
     gles_glBlendEquationSeparate(modeRGB, modeA);
 }
+/*
 void glBlendEquationSeparate(GLenum modeRGB, GLenum modeA) AliasExport("gl4es_glBlendEquationSeparate");
 void glBlendEquationSeparateEXT(GLenum modeRGB, GLenum modeA) AliasExport("gl4es_glBlendEquationSeparate");
+*/
 
 void gl4es_glBlendFunc(GLenum sfactor, GLenum dfactor) {
     if(!glstate->list.pending) 
@@ -155,7 +160,7 @@ void gl4es_glBlendFunc(GLenum sfactor, GLenum dfactor) {
 #endif
     gles_glBlendFunc(sfactor, dfactor);
 }
-void glBlendFunc(GLenum sfactor, GLenum dfactor) AliasExport("gl4es_glBlendFunc");
+//void glBlendFunc(GLenum sfactor, GLenum dfactor) AliasExport("gl4es_glBlendFunc");
 
 void gl4es_glBlendEquation(GLenum mode) {
     PUSH_IF_COMPILING(glBlendEquation)
@@ -166,5 +171,7 @@ void gl4es_glBlendEquation(GLenum mode) {
 #endif
     gles_glBlendEquation(mode);
 }
+/*
 void glBlendEquation(GLenum mode) AliasExport("gl4es_glBlendEquation");
 void glBlendEquationEXT(GLenum mode) AliasExport("gl4es_glBlendEquation");
+*/

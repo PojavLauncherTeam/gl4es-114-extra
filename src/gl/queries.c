@@ -197,6 +197,7 @@ void gl4es_glGetQueryObjectuiv(GLuint id, GLenum pname, GLuint* params) {
 
 
 //Direct wrapper
+/*
 void glGenQueries(GLsizei n, GLuint * ids) AliasExport("gl4es_glGenQueries");
 GLboolean glIsQuery(GLuint id) AliasExport("gl4es_glIsQuery");
 void glDeleteQueries(GLsizei n, const GLuint* ids) AliasExport("gl4es_glDeleteQueries");
@@ -205,6 +206,7 @@ void glEndQuery(GLenum target) AliasExport("gl4es_glEndQuery");
 void glGetQueryiv(GLenum target, GLenum pname, GLint* params) AliasExport("gl4es_glGetQueryiv");
 void glGetQueryObjectiv(GLuint id, GLenum pname, GLint* params) AliasExport("gl4es_glGetQueryObjectiv");
 void glGetQueryObjectuiv(GLuint id, GLenum pname, GLuint* params) AliasExport("gl4es_glGetQueryObjectuiv");
+*/
 
 // ARB wrapper
 void glGenQueriesARB(GLsizei n, GLuint * ids) AliasExport("gl4es_glGenQueries");

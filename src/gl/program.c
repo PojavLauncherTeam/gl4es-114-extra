@@ -841,6 +841,7 @@ void gl4es_glValidateProgram(GLuint program) {
 }
 
 
+/*
 void glAttachShader(GLuint program, GLuint shader) AliasExport("gl4es_glAttachShader");
 void glBindAttribLocation(GLuint program, GLuint index, const GLchar *name) AliasExport("gl4es_glBindAttribLocation");
 GLuint glCreateProgram(void) AliasExport("gl4es_glCreateProgram");
@@ -856,6 +857,7 @@ GLboolean glIsProgram(GLuint program) AliasExport("gl4es_glIsProgram");
 void glLinkProgram(GLuint program) AliasExport("gl4es_glLinkProgram");
 void glUseProgram(GLuint program) AliasExport("gl4es_glUseProgram");
 void glValidateProgram(GLuint program) AliasExport("gl4es_glValidateProgram");
+*/
 
 void glGetProgramBinary(GLuint program, GLsizei bufSize, GLsizei *length, GLenum *binaryFormat, void *binary) AliasExport("gl4es_glGetProgramBinary");
 void glProgramBinary(GLuint program, GLenum binaryFormat, const void *binary, GLsizei length) AliasExport("gl4es_glProgramBinary");
