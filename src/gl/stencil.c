@@ -6,6 +6,7 @@
 #include "glstate.h"
 #include "loader.h"
 #include "vgpu/pack/pack.h"
+#include "vgpu/pack/load.h"
 
 void gl4es_glStencilMask(GLuint mask) {
     if(!glstate->list.pending) 

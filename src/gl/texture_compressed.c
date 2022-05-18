@@ -16,6 +16,7 @@
 #include "pixel.h"
 #include "raster.h"
 #include "stb_dxt_104.h"
+#include "vgpu/pack/load.h"
 
 //#define DEBUG
 #ifdef DEBUG

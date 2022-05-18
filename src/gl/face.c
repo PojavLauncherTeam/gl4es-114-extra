@@ -3,6 +3,7 @@
 #include "loader.h"
 #include "gl4es.h"
 #include "glstate.h"
+#include "vgpu/pack/load.h"
 
 void gl4es_glCullFace(GLenum mode) {
     if(!glstate->list.pending)

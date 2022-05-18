@@ -6,6 +6,7 @@
 #include "glstate.h"
 #include "init.h"
 #include "loader.h"
+#include "vgpu/pack/load.h"
 
 // KH Map implementation
 KHASH_MAP_IMPL_INT(material, rendermaterial_t *);

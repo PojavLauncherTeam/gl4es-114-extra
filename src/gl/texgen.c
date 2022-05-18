@@ -7,6 +7,7 @@
 #include "loader.h"
 #include "matrix.h"
 #include "matvec.h"
+#include "vgpu/pack/load.h"
 
 //extern void* eglGetProcAddress(const char*);
 

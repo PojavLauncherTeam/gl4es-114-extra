@@ -3,6 +3,7 @@
 #include "gl4es.h"
 #include "glstate.h"
 #include "loader.h"
+#include "vgpu/pack/load.h"
 
 void gl4es_glDepthFunc(GLenum func) {
     if(glstate->list.compiling) {

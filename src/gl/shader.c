@@ -8,6 +8,7 @@
 #include "loader.h"
 #include "shaderconv.h"
 #include "vgpu/shaderconv.h"
+#include "vgpu/pack/load.h"
 
 //#define DEBUG
 #ifdef DEBUG

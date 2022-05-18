@@ -16,6 +16,7 @@
 #include "init.h"
 #include "loader.h"
 #include "matrix.h"
+#include "vgpu/pack/load.h"
 
 //#define DEBUG
 #ifdef DEBUG

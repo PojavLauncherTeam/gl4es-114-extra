@@ -5,6 +5,7 @@
 #include "glstate.h"
 #include "loader.h"
 #include "matvec.h"
+#include "vgpu/pack/load.h"
 
 //#define DEBUG
 #ifdef DEBUG

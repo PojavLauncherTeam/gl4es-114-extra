@@ -7,6 +7,7 @@
 #include "logs.h"
 #include "gl4es.h"
 #include "gles.h"
+#include "vgpu/pack/load.h"
 
 #define p(a) \
     case a: return #a

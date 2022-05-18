@@ -10,6 +10,7 @@
 #include "loader.h"
 #include "matvec.h"
 #include "pixel.h"
+#include "vgpu/pack/load.h"
 
 #define min(a, b)	((a)<b)?(a):(b)
 #define max(a, b)	((a)>(b))?(a):(b)

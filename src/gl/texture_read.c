@@ -15,6 +15,7 @@
 #include "matrix.h"
 #include "pixel.h"
 #include "raster.h"
+#include "vgpu/pack/load.h"
 
 //#define DEBUG
 #ifdef DEBUG

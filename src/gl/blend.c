@@ -7,6 +7,8 @@
 #include "init.h"
 #include "loader.h"
 #include "logs.h"
+#include "vgpu/pack/load.h"
+
 
 void gl4es_glBlendColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) {
     PUSH_IF_COMPILING(glBlendColor);

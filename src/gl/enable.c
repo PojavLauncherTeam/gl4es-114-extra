@@ -3,6 +3,7 @@
 #include "init.h"
 #include "loader.h"
 #include "debug.h"
+#include "vgpu/pack/load.h"
 
 //#define DEBUG
 #ifdef DEBUG
