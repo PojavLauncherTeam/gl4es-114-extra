@@ -219,7 +219,7 @@ void gl4es_glBindFramebuffer(GLenum target, GLuint framebuffer) {
 	PUSH_IF_COMPILING(glBindFramebuffer);
     LOAD_GLES2_OR_OES(glBindFramebuffer);
 //    LOAD_GLES2_OR_OES(glCheckFramebufferStatus);
-    LOAD_GLES(glGetError);
+    LOAD_GLES2_(glGetError);
 
     glframebuffer_t *fb = find_framebuffer(framebuffer);
     if(!fb) {
@@ -426,10 +426,10 @@ void gl4es_glFramebufferTexture2D(GLenum target, GLenum attachment, GLenum texta
     static int scrap_height = 0;
     
     LOAD_GLES2_OR_OES(glFramebufferTexture2D);
-    LOAD_GLES(glTexImage2D);
-    LOAD_GLES(glBindTexture);
-    LOAD_GLES(glActiveTexture);
-    LOAD_GLES(glTexParameteri);
+    LOAD_GLES2_(glTexImage2D);
+    LOAD_GLES2_(glBindTexture);
+    LOAD_GLES2_(glActiveTexture);
+    LOAD_GLES2_(glTexParameteri);
 
     glframebuffer_t *fb = get_framebuffer(target);
     if(!fb) {
@@ -839,7 +839,7 @@ void gl4es_glFramebufferRenderbuffer(GLenum target, GLenum attachment, GLenum re
     DBG(printf("glFramebufferRenderbuffer(%s, %s, %s, %u)\n", PrintEnum(target), PrintEnum(attachment), PrintEnum(renderbuffertarget), renderbuffer);)
     LOAD_GLES2_OR_OES(glFramebufferRenderbuffer);
     LOAD_GLES2_OR_OES(glGetFramebufferAttachmentParameteriv);
-    LOAD_GLES(glGetError);
+    LOAD_GLES2_(glGetError);
 
     glframebuffer_t *fb = get_framebuffer(target);
     if(!fb) {
@@ -1028,9 +1028,9 @@ void gl4es_glRenderbufferStorage(GLenum target, GLenum internalformat, GLsizei w
     if(rend->secondarytexture) {
         // should check if texture is still needed?
         gltexture_t *tex = gl4es_getTexture(GL_TEXTURE_2D, rend->secondarytexture);
-        LOAD_GLES(glActiveTexture);
-        LOAD_GLES(glBindTexture);
-        LOAD_GLES(glTexImage2D);
+        LOAD_GLES2_(glActiveTexture);
+        LOAD_GLES2_(glBindTexture);
+        LOAD_GLES2_(glTexImage2D);
         int oldactive = glstate->texture.active;
         if(oldactive) gles_glActiveTexture(GL_TEXTURE0);
         gltexture_t *bound = glstate->texture.bound[0/*glstate->texture.active*/][ENABLED_TEX2D];
@@ -1213,13 +1213,13 @@ void createMainFBO(int width, int height) {
     LOAD_GLES2_OR_OES(glRenderbufferStorage);
     LOAD_GLES2_OR_OES(glGenRenderbuffers);
     LOAD_GLES2_OR_OES(glBindRenderbuffer);
-    LOAD_GLES(glTexImage2D);
-    LOAD_GLES(glGenTextures);
-    LOAD_GLES(glBindTexture);
-    LOAD_GLES(glActiveTexture);
-    LOAD_GLES(glTexParameteri);
+    LOAD_GLES2_(glTexImage2D);
+    LOAD_GLES2_(glGenTextures);
+    LOAD_GLES2_(glBindTexture);
+    LOAD_GLES2_(glActiveTexture);
+    LOAD_GLES2_(glTexParameteri);
     LOAD_GLES2(glClientActiveTexture);
-    LOAD_GLES(glClear);
+    LOAD_GLES2_(glClear);
 
     // If there is already a Framebuffer created, let's delete it.... unless it's already the right size!
     int createIt = 1;
@@ -1357,7 +1357,7 @@ void unbindMainFBO() {
 void deleteMainFBO(void *state) {
     LOAD_GLES2_OR_OES(glDeleteFramebuffers);
     LOAD_GLES2_OR_OES(glDeleteRenderbuffers);
-    LOAD_GLES(glDeleteTextures);
+    LOAD_GLES2_(glDeleteTextures);
 
     glstate_t *glstate = (glstate_t*)state;
 

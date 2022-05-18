@@ -1452,7 +1452,7 @@ void gl4es_glXSwapBuffers(Display *display,
     }
     // check emulated Pixmap
     if(PBuffer && glstate->emulatedPixmap) {
-        LOAD_GLES(glFinish);
+        LOAD_GLES2_(glFinish);
         gles_glFinish();
         BlitEmulatedPixmap();
     } else
@@ -2787,7 +2787,7 @@ void BlitEmulatedPixmap() {
     // grab framebuffer
     void* tmp = NULL;
 #ifdef PANDORA
-    LOAD_GLES(glReadPixels);
+    LOAD_GLES2_(glReadPixels);
     if(hardext.esversion==1) {
         if(Depth==16) {
             tmp = (void*)(pix + Width*Height*2);

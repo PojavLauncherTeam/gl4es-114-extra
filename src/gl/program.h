@@ -321,7 +321,7 @@ int gl4es_getProgramBinary(GLuint program, int *length, GLenum *format, void** b
     if(glstate->gleshard->program != prg) {  \
         glstate->gleshard->program = prg;    \
         glstate->gleshard->glprogram = glprg;\
-        LOAD_GLES2(glUseProgram);           \
+        LOAD_GLES2_(glUseProgram);           \
         if(gles_glUseProgram)               \
             gles_glUseProgram(prg);         \
     }

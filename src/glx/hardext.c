@@ -20,11 +20,11 @@ hardext_t hardext = {0};
 
 static int testGLSL(const char* version, int uniformLoc) {
     // check if glsl 120 shaders are supported... by compiling one !
-    LOAD_GLES2(glCreateShader);
-    LOAD_GLES2(glShaderSource);
-    LOAD_GLES2(glCompileShader);
-    LOAD_GLES2(glGetShaderiv);
-    LOAD_GLES2(glDeleteShader);
+    LOAD_GLES2_(glCreateShader);
+    LOAD_GLES2_(glShaderSource);
+    LOAD_GLES2_(glCompileShader);
+    LOAD_GLES2_(glGetShaderiv);
+    LOAD_GLES2_(glDeleteShader);
 
     GLuint shad = gles_glCreateShader(GL_VERTEX_SHADER);
     const char* shadTest[4] = {
@@ -42,7 +42,7 @@ static int testGLSL(const char* version, int uniformLoc) {
     gles_glGetShaderiv(shad, GL_COMPILE_STATUS, &compiled);
     /*
     if(!compiled) {
-        LOAD_GLES2(glGetShaderInfoLog)
+        LOAD_GLES2_(glGetShaderInfoLog)
         char buff[500];
         gles_glGetShaderInfoLog(shad, 500, NULL, buff);
         printf("LIBGL: \"%s\" failed, message:\n%s\n", version, buff);
@@ -54,11 +54,11 @@ static int testGLSL(const char* version, int uniformLoc) {
 }
 
 static int testTextureCubeLod() {
-    LOAD_GLES2(glCreateShader);
-    LOAD_GLES2(glShaderSource);
-    LOAD_GLES2(glCompileShader);
-    LOAD_GLES2(glGetShaderiv);
-    LOAD_GLES2(glDeleteShader);
+    LOAD_GLES2_(glCreateShader);
+    LOAD_GLES2_(glShaderSource);
+    LOAD_GLES2_(glCompileShader);
+    LOAD_GLES2_(glGetShaderiv);
+    LOAD_GLES2_(glDeleteShader);
 
     GLuint shad = gles_glCreateShader(GL_FRAGMENT_SHADER);
     const char* shadTest[3] = {
@@ -241,9 +241,9 @@ void GetHardwareExtensions(int notest)
     egl_eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext);
 #endif
     tested = 1;
-    LOAD_GLES(glGetString);
-    LOAD_GLES(glGetIntegerv);
-    LOAD_GLES(glGetError);
+    LOAD_GLES2_(glGetString);
+    LOAD_GLES2_(glGetIntegerv);
+    LOAD_GLES2_(glGetError);
     // Now get extensions
     const char* Exts = gles_glGetString(GL_EXTENSIONS);
     // Parse them!
@@ -320,7 +320,7 @@ void GetHardwareExtensions(int notest)
             S("GL_OES_fragment_precision_high ", highp, 1);
             if(!hardext.highp) {
                 // check if highp is supported anyway
-                LOAD_GLES2(glGetShaderPrecisionFormat);
+                LOAD_GLES2_(glGetShaderPrecisionFormat);
                 if(gles_glGetShaderPrecisionFormat) {
                     GLint range[2] = {0};
                     GLint precision=0;

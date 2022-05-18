@@ -146,7 +146,7 @@ gltexture_t* gl4es_getTexture(GLenum target, GLuint texture) {
     k = kh_get(tex, list, texture);
     
     if (k == kh_end(list)){
-        LOAD_GLES(glGenTextures);
+        LOAD_GLES2_(glGenTextures);
         k = kh_put(tex, list, texture, &ret);
         tex = kh_value(list, k) = malloc(sizeof(gltexture_t));
         memset(tex, 0, sizeof(gltexture_t));
@@ -197,7 +197,7 @@ void gl4es_glBindTexture(GLenum target, GLuint texture) {
         tex_changed = glstate->texture.active+1;
         glstate->texture.bound[glstate->texture.active][itarget] = tex;
 
-        LOAD_GLES(glBindTexture);
+        LOAD_GLES2_(glBindTexture);
         switch(target) {
             // cube map are bounded immediatly, other are defered and will be applied with realize_bound or realize_textures
             case GL_TEXTURE_CUBE_MAP:
@@ -228,7 +228,7 @@ void gl4es_glTexParameteri(GLenum target, GLenum pname, GLint param) {
     if(!glstate->list.pending) {
         PUSH_IF_COMPILING(glTexParameteri);
     }
-    LOAD_GLES(glTexParameteri);
+    LOAD_GLES2_(glTexParameteri);
     noerrorShim();
     const GLint itarget = what_target(target);
     const GLuint rtarget = map_tex_target(target);
@@ -376,7 +376,7 @@ void gl4es_glTexParameterfv(GLenum target, GLenum pname, const GLfloat * params)
     }
     PUSH_IF_COMPILING(glTexParameterfv);
     realize_bound(glstate->texture.active, target);
-    LOAD_GLES(glTexParameterfv);
+    LOAD_GLES2_(glTexParameterfv);
     errorGL();
     const GLuint rtarget = map_tex_target(target);
     gles_glTexParameterfv(rtarget, pname, params);
@@ -408,7 +408,7 @@ void gl4es_glTexParameteriv(GLenum target, GLenum pname, const GLint * params) {
     }
     PUSH_IF_COMPILING(glTexParameteriv);
     realize_bound(glstate->texture.active, target);
-    LOAD_GLES(glTexParameteriv);
+    LOAD_GLES2_(glTexParameteriv);
     errorGL();
     const GLuint rtarget = map_tex_target(target);
     gles_glTexParameteriv(rtarget, pname, params);
@@ -420,7 +420,7 @@ void gl4es_glDeleteTextures(GLsizei n, const GLuint *textures) {
     FLUSH_BEGINEND;
     
     noerrorShim();
-    LOAD_GLES(glDeleteTextures);
+    LOAD_GLES2_(glDeleteTextures);
     khash_t(tex) *list = glstate->texture.list;
     if (list) {
         khint_t k;
@@ -480,7 +480,7 @@ void gl4es_glGenTextures(GLsizei n, GLuint * textures) {
     if (n<=0) 
         return;
     FLUSH_BEGINEND;
-    LOAD_GLES(glGenTextures);
+    LOAD_GLES2_(glGenTextures);
     gles_glGenTextures(n, textures);
     errorGL();
     // now, add all the textures to the list
@@ -715,7 +715,7 @@ void gl4es_glPixelStorei(GLenum pname, GLint param) {
     DBG(printf("glPixelStorei(%s, %d)\n", PrintEnum(pname), param);)
     // TODO: add to glGetIntegerv?
 
-    LOAD_GLES(glPixelStorei);
+    LOAD_GLES2_(glPixelStorei);
     noerrorShim();
     switch (pname) {
         case GL_UNPACK_ROW_LENGTH:
@@ -779,13 +779,13 @@ void gl4es_glPixelStorei(GLenum pname, GLint param) {
 // bind the correct texture on Tex2D or TEXCUBE mapper...
 void realize_bound(int TMU, GLenum target) {
     realize_active();
-    LOAD_GLES(glBindTexture);
+    LOAD_GLES2_(glBindTexture);
     gltexture_t *tex = glstate->texture.bound[TMU][what_target(target)];
     GLuint t = tex->glname;
     DBG(printf("realize_bound(%d, %s), glsate->actual_tex2d[%d]=%u / %u\n", TMU, PrintEnum(target), TMU, glstate->actual_tex2d[TMU], t);)
 #ifdef TEXSTREAM
-    LOAD_GLES(glEnable);
-    LOAD_GLES(glDisable);
+    LOAD_GLES2_(glEnable);
+    LOAD_GLES2_(glDisable);
 #endif
     switch (target) {
         case GL_TEXTURE_1D:
@@ -825,7 +825,7 @@ void realize_bound(int TMU, GLenum target) {
 }
 
 void realize_active() {
-    LOAD_GLES(glActiveTexture);
+    LOAD_GLES2_(glActiveTexture);
     if(glstate->gleshard->active == glstate->texture.active)
         return;
     glstate->gleshard->active = glstate->texture.active;
@@ -833,10 +833,10 @@ void realize_active() {
 }
 
 void realize_textures(int drawing) {
-    LOAD_GLES(glEnable);
-    LOAD_GLES(glDisable);
-    LOAD_GLES(glBindTexture);
-    LOAD_GLES(glActiveTexture);
+    LOAD_GLES2_(glEnable);
+    LOAD_GLES2_(glDisable);
+    LOAD_GLES2_(glBindTexture);
+    LOAD_GLES2_(glActiveTexture);
 #ifdef TEXSTREAM
     DBG(printf("realize_textures(), glstate->bound_changed=%d, glstate->enable.texture[0]=%X glsate->actual_tex2d[0]=%u / glstate->bound_stream[0]=%u\n", glstate->bound_changed, glstate->enable.texture[0], glstate->actual_tex2d[0], glstate->bound_stream[0]);)
 #else

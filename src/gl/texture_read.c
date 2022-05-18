@@ -53,7 +53,7 @@ void gl4es_glCopyTexImage2D(GLenum target,  GLint level,  GLenum internalformat,
     gltexture_t* bound = glstate->texture.bound[glstate->texture.active][itarget];
 
     if(glstate->fbo.current_fb->read_type==0) {
-        LOAD_GLES(glGetIntegerv);
+        LOAD_GLES2_(glGetIntegerv);
         gles_glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT_OES, &glstate->fbo.current_fb->read_format);
         gles_glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_TYPE_OES, &glstate->fbo.current_fb->read_type);
     }
@@ -78,7 +78,7 @@ void gl4es_glCopyTexImage2D(GLenum target,  GLint level,  GLenum internalformat,
             default:
                 fmt = GL_RGBA;
         }
-        LOAD_GLES(glCopyTexImage2D);
+        LOAD_GLES2_(glCopyTexImage2D);
         gles_glCopyTexImage2D(target, level, fmt, x, y, width, height, border);
     } else {
         void* tmp = malloc(width*height*4);
@@ -102,7 +102,7 @@ void gl4es_glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint 
     // PUSH_IF_COMPILING(glCopyTexSubImage2D);
     FLUSH_BEGINEND;
  
-    LOAD_GLES(glCopyTexSubImage2D);
+    LOAD_GLES2_(glCopyTexSubImage2D);
     errorGL();
     realize_bound(glstate->texture.active, target);
     
@@ -133,7 +133,7 @@ void gl4es_glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint 
     {
         int copytex = 0;
         if(glstate->fbo.current_fb->read_type==0) {
-            LOAD_GLES(glGetIntegerv);
+            LOAD_GLES2_(glGetIntegerv);
             gles_glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT_OES, &glstate->fbo.current_fb->read_format);
             gles_glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_TYPE_OES, &glstate->fbo.current_fb->read_type);
         }
@@ -169,7 +169,7 @@ void gl4es_glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum 
         errorShim(GL_INVALID_OPERATION);
         return;	// never in list
     }
-    LOAD_GLES(glReadPixels);
+    LOAD_GLES2_(glReadPixels);
     errorGL();
     GLvoid* dst = data;
     if (glstate->vao->pack)

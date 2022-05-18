@@ -86,7 +86,7 @@ void gl4es_glBlendFunc(GLenum sfactor, GLenum dfactor) {
 
     FLUSH_BEGINEND;
 
-    LOAD_GLES(glBlendFunc);
+    LOAD_GLES2_(glBlendFunc);
     LOAD_GLES2_OR_OES(glBlendFuncSeparate);
     errorGL();
     

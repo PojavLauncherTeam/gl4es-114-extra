@@ -20,7 +20,7 @@ GLenum gl4es_glGetError() {
     DBG(printf("glGetError(), noerror=%d, shim_error=%d\n", globals4es.noerror, glstate->shim_error);)
     if(globals4es.noerror)
         return GL_NO_ERROR;
-	LOAD_GLES(glGetError);
+	LOAD_GLES2_(glGetError);
 	if (glstate->shim_error) {
         if(glstate->shim_error!=2)
             gles_glGetError();  // purge error log
@@ -251,7 +251,7 @@ const GLubyte *gl4es_glGetString(GLenum name) {
             return (GLubyte*)glstate->glsl->error_msg;
         default:
             if(name&0x10000) {
-                LOAD_GLES(glGetString);
+                LOAD_GLES2_(glGetString);
                 return gles_glGetString(name-0x10000);
             }
 			errorShim(GL_INVALID_ENUM);
@@ -764,7 +764,7 @@ void gl4es_glGetIntegerv(GLenum pname, GLint *params) {
         return;
     }
     GLint dummy;
-    LOAD_GLES(glGetIntegerv);
+    LOAD_GLES2_(glGetIntegerv);
     noerrorShim();
     GLfloat fparam;
     if (gl4es_commonGet(pname, &fparam)) {
@@ -857,7 +857,7 @@ void gl4es_glGetIntegerv(GLenum pname, GLint *params) {
 
 void gl4es_glGetFloatv(GLenum pname, GLfloat *params) {
     DBG(printf("glGetFloatv(%s, %p)\n", PrintEnum(pname), params);)
-    LOAD_GLES(glGetFloatv);
+    LOAD_GLES2_(glGetFloatv);
     noerrorShim();
     if (gl4es_commonGet(pname, params)) {
         return;
@@ -925,7 +925,7 @@ void gl4es_glGetFloatv(GLenum pname, GLfloat *params) {
 void gl4es_glGetDoublev(GLenum pname, GLdouble *params) {
     DBG(printf("glGetDoublev(%s, %p)\n", PrintEnum(pname), params);)
     GLfloat tmp[4*4];
-    LOAD_GLES(glGetFloatv);
+    LOAD_GLES2_(glGetFloatv);
     noerrorShim();
     if (gl4es_commonGet(pname, tmp)) {
         *params = *tmp;

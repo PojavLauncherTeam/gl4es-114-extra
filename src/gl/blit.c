@@ -56,7 +56,7 @@ void gl4es_blitTexture_gles1(GLuint texture,
 
     if(drawtexok) {
         LOAD_GLES_OES(glDrawTexf);
-        LOAD_GLES(glTexParameteriv);
+        LOAD_GLES2_(glTexParameteriv);
         // setup texture first
         int sourceRect[4] = {sx, sy, width, height};
         gles_glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_CROP_RECT_OES, sourceRect);
@@ -69,7 +69,7 @@ void gl4es_blitTexture_gles1(GLuint texture,
     } else {
         LOAD_GLES(glVertexPointer);
         LOAD_GLES(glTexCoordPointer);
-        LOAD_GLES(glDrawArrays);
+        LOAD_GLES2_(glDrawArrays);
 
         GLfloat w2 = 2.0f / (customvp?vpwidth:glstate->raster.viewport.width);
         GLfloat h2 = 2.0f / (customvp?vpheight:glstate->raster.viewport.height);
@@ -180,21 +180,21 @@ void gl4es_blitTexture_gles2(GLuint texture,
     GLfloat vpwidth, GLfloat vpheight, 
     GLfloat x, GLfloat y, GLint mode) {
 
-    LOAD_GLES(glDrawArrays);
+    LOAD_GLES2_(glDrawArrays);
 
     if(!glstate->blit) {
-        LOAD_GLES2(glCreateShader);
-        LOAD_GLES2(glShaderSource);
-        LOAD_GLES2(glCompileShader);
-        LOAD_GLES2(glGetShaderiv);
-        LOAD_GLES2(glBindAttribLocation);
-        LOAD_GLES2(glAttachShader);
-        LOAD_GLES2(glCreateProgram);
-        LOAD_GLES2(glLinkProgram);
-        LOAD_GLES2(glGetProgramiv);
-        LOAD_GLES(glGetUniformLocation);
-        LOAD_GLES2(glUniform1i);
-        LOAD_GLES2(glUseProgram);
+        LOAD_GLES2_(glCreateShader);
+        LOAD_GLES2_(glShaderSource);
+        LOAD_GLES2_(glCompileShader);
+        LOAD_GLES2_(glGetShaderiv);
+        LOAD_GLES2_(glBindAttribLocation);
+        LOAD_GLES2_(glAttachShader);
+        LOAD_GLES2_(glCreateProgram);
+        LOAD_GLES2_(glLinkProgram);
+        LOAD_GLES2_(glGetProgramiv);
+        LOAD_GLES2_(glGetUniformLocation);
+        LOAD_GLES2_(glUniform1i);
+        LOAD_GLES2_(glUseProgram);
 
         glstate->blit = (glesblit_t*)malloc(sizeof(glesblit_t));
         memset(glstate->blit, 0, sizeof(glesblit_t));
@@ -208,7 +208,7 @@ void gl4es_blitTexture_gles2(GLuint texture,
         gles_glGetShaderiv( glstate->blit->pixelshader, GL_COMPILE_STATUS, &success );
         if (!success)
         {
-            LOAD_GLES(glGetShaderInfoLog);
+            LOAD_GLES2_(glGetShaderInfoLog);
             char log[400];
             gles_glGetShaderInfoLog(glstate->blit->pixelshader_alpha, 399, NULL, log);
             SHUT_LOGE("Failed to produce blit fragment shader.\n%s", log);
@@ -223,7 +223,7 @@ void gl4es_blitTexture_gles2(GLuint texture,
         gles_glGetShaderiv( glstate->blit->pixelshader_alpha, GL_COMPILE_STATUS, &success );
         if (!success)
         {
-            LOAD_GLES(glGetShaderInfoLog);
+            LOAD_GLES2_(glGetShaderInfoLog);
             char log[400];
             gles_glGetShaderInfoLog(glstate->blit->pixelshader_alpha, 399, NULL, log);
             SHUT_LOGE("Failed to produce blit with alpha fragment shader.\n%s", log);
@@ -238,7 +238,7 @@ void gl4es_blitTexture_gles2(GLuint texture,
         gles_glGetShaderiv( glstate->blit->vertexshader, GL_COMPILE_STATUS, &success );
         if( !success )
         {
-            LOAD_GLES(glGetShaderInfoLog);
+            LOAD_GLES2_(glGetShaderInfoLog);
             char log[400];
             gles_glGetShaderInfoLog(glstate->blit->pixelshader_alpha, 399, NULL, log);
             SHUT_LOGE("Failed to produce blit vertex shader.\n%s", log);
@@ -253,7 +253,7 @@ void gl4es_blitTexture_gles2(GLuint texture,
         gles_glGetShaderiv( glstate->blit->vertexshader_alpha, GL_COMPILE_STATUS, &success );
         if( !success )
         {
-            LOAD_GLES(glGetShaderInfoLog);
+            LOAD_GLES2_(glGetShaderInfoLog);
             char log[400];
             gles_glGetShaderInfoLog(glstate->blit->pixelshader_alpha, 399, NULL, log);
             SHUT_LOGE("Failed to produce blit with alpha vertex shader.\n%s", log);
@@ -344,10 +344,10 @@ void gl4es_blitTexture(GLuint texture,
     GLfloat vpwidth, GLfloat vpheight, 
     GLfloat x, GLfloat y, GLint mode) {
 //printf("blitTexture(%d, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %d) customvp=%d, vp=%d/%d/%d/%d\n", texture, sx, sy, width, height, nwidth, nheight, zoomx, zoomy, vpwidth, vpheight, x, y, mode, (vpwidth>0.0), glstate->raster.viewport.x, glstate->raster.viewport.y, glstate->raster.viewport.width, glstate->raster.viewport.height);
-    LOAD_GLES(glBindTexture);
-    LOAD_GLES(glActiveTexture);
-    LOAD_GLES(glEnable);
-    LOAD_GLES(glDisable);
+    LOAD_GLES2_(glBindTexture);
+    LOAD_GLES2_(glActiveTexture);
+    LOAD_GLES2_(glEnable);
+    LOAD_GLES2_(glDisable);
 
     realize_textures(1);
 

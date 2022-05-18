@@ -321,7 +321,7 @@ void gen_tex_coords(GLfloat *verts, GLfloat *norm, GLfloat **coords, GLint count
             realize_active();
             LOAD_GLES_OES(glTexGeni);
             LOAD_GLES_OES(glTexGenfv);
-            LOAD_GLES(glEnable);
+            LOAD_GLES2_(glEnable);
             // setup cube map mode
             gles_glTexGeni(GL_TEXTURE_GEN_STR, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP);
             // enable texgen
@@ -357,7 +357,7 @@ void gen_tex_coords(GLfloat *verts, GLfloat *norm, GLfloat **coords, GLint count
         realize_active();
         LOAD_GLES_OES(glTexGeni);
         LOAD_GLES_OES(glTexGenfv);
-        LOAD_GLES(glEnable);
+        LOAD_GLES2_(glEnable);
         // setup cube map mode
         gles_glTexGeni(GL_TEXTURE_GEN_STR, GL_TEXTURE_GEN_MODE, GL_NORMAL_MAP);
         // enable texgen
@@ -410,7 +410,7 @@ void gen_tex_clean(GLint cleancode, int texture) {
 		return;
 	if (cleancode == 1) {
 		GLuint old_tex=glstate->texture.active;
-		LOAD_GLES(glDisable);
+		LOAD_GLES2_(glDisable);
 		gles_glDisable(GL_TEXTURE_GEN_STR);
         // check Texture Matrix
         if ((hardext.esversion==1) && !(globals4es.texmat || glstate->texture_matrix[texture]->identity)) {

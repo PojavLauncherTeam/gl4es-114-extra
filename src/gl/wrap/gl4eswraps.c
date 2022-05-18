@@ -643,7 +643,7 @@ void gl4es_glGetTexParameteriv(GLenum target, GLenum pname, GLint * params) {
 // Samples stuff
 #include "../loader.h"
 void gl4es_glSampleCoverage(GLclampf value, GLboolean invert) {
-    LOAD_GLES(glSampleCoverage);
+    LOAD_GLES2_(glSampleCoverage);
     PUSH_IF_COMPILING(glSampleCoverage)
     gles_glSampleCoverage(value, invert);
 }

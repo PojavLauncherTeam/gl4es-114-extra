@@ -10,7 +10,7 @@
 void gl4es_glStencilMask(GLuint mask) {
     if(!glstate->list.pending) 
         PUSH_IF_COMPILING(glStencilMask);
-    LOAD_GLES(glStencilMask);
+    LOAD_GLES2_(glStencilMask);
     if(glstate->stencil.mask[0]==glstate->stencil.mask[1] && glstate->stencil.mask[0]==mask) {
         noerrorShim();
         return;
@@ -63,7 +63,7 @@ void gl4es_glStencilFunc(GLenum func, GLint ref, GLuint mask) {
           noerrorShim();
           return;
       }
-    LOAD_GLES(glStencilFunc);
+    LOAD_GLES2_(glStencilFunc);
     errorGL();
     FLUSH_BEGINEND;
     glstate->stencil.func[0] = glstate->stencil.func[1] = func;
@@ -117,7 +117,7 @@ void gl4es_glStencilOp(GLenum fail, GLenum zfail, GLenum zpass) {
           noerrorShim();
           return;
       }
-    LOAD_GLES(glStencilOp);
+    LOAD_GLES2_(glStencilOp);
     FLUSH_BEGINEND;
     glstate->stencil.sfail[0] = glstate->stencil.sfail[1] = fail;
     glstate->stencil.dpfail[0] = glstate->stencil.dpfail[1] = zfail;
@@ -168,7 +168,7 @@ void gl4es_glClearStencil(GLint s) {
           noerrorShim();
           return;
       }
-    LOAD_GLES(glClearStencil);
+    LOAD_GLES2_(glClearStencil);
     FLUSH_BEGINEND;
     glstate->stencil.clear = s;
     errorGL();

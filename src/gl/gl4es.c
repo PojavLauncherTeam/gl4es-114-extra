@@ -695,16 +695,16 @@ void ToBuffer(int first, int count) {
     uintptr_t ptr = 0;
     // move "master" data if there
     #if 0
-    LOAD_GLES(glGenBuffers);
-    LOAD_GLES(glBufferData);
-    LOAD_GLES(glBindBuffer);
+    LOAD_GLES2_(glGenBuffers);
+    LOAD_GLES2_(glBufferData);
+    LOAD_GLES2_(glBindBuffer);
     if(!glstate->scratch_vertex)
         gles_glGenBuffers(1, &glstate->scratch_vertex);
     glstate->scratch_vertex_size = stride*count;
     gles_glBindBuffer(GL_ARRAY_BUFFER, glstate->scratch_vertex);
     gles_glBufferData(GL_ARRAY_BUFFER, stride*count, (void*)(master+first*stride), GL_STREAM_DRAW);
     #else
-    LOAD_GLES(glBufferSubData);
+    LOAD_GLES2_(glBufferSubData);
     gl4es_scratch_vertex(total);    // alloc if needed and bind scratch vertex buffer
     gles_glBufferSubData(GL_ARRAY_BUFFER, ptr, stride*count, (void*)(master+first*stride));
     #endif
@@ -1002,7 +1002,7 @@ void gl4es_flush() {
 extern void BlitEmulatedPixmap();
 #endif
 void gl4es_glFlush() {
-	LOAD_GLES(glFlush);
+	LOAD_GLES2_(glFlush);
     
     realize_textures(0);
     FLUSH_BEGINEND;
@@ -1019,7 +1019,7 @@ void gl4es_glFlush() {
 //void glFlush() AliasExport("gl4es_glFlush");
 
 void gl4es_glFinish() {
-	LOAD_GLES(glFinish);
+	LOAD_GLES2_(glFinish);
     
     realize_textures(0);
     FLUSH_BEGINEND;
@@ -1116,7 +1116,7 @@ void gl4es_glColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean
     glstate->colormask[1]=green;
     glstate->colormask[2]=blue;
     glstate->colormask[3]=alpha;
-    LOAD_GLES(glColorMask);
+    LOAD_GLES2_(glColorMask);
     gles_glColorMask(red, green, blue, alpha);
 }
 //void glColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha) AliasExport("gl4es_glColorMask");
@@ -1125,7 +1125,7 @@ void gl4es_glClear(GLbitfield mask) {
     PUSH_IF_COMPILING(glClear);
 
     mask &= GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
-    LOAD_GLES(glClear);
+    LOAD_GLES2_(glClear);
     gles_glClear(mask);
 }
 //void glClear(GLbitfield mask) AliasExport("gl4es_glClear");
@@ -1153,15 +1153,15 @@ void gl4es_scratch(int alloc) {
 }
 
 void gl4es_scratch_vertex(int alloc) {
-    LOAD_GLES(glBufferData);
-    LOAD_GLES(glBindBuffer);
-    LOAD_GLES(glGenBuffers);
+    LOAD_GLES2_(glBufferData);
+    LOAD_GLES2_(glBindBuffer);
+    LOAD_GLES2_(glGenBuffers);
     if(!glstate->scratch_vertex) {
         glGenBuffers(1, &glstate->scratch_vertex);
     }
     if(glstate->scratch_vertex_size < alloc) {
 #ifdef AMIGAOS4
-        LOAD_GLES(glDeleteBuffers);
+        LOAD_GLES2_(glDeleteBuffers);
         GLuint old_buffer = glstate->scratch_vertex;
         glGenBuffers(1, &glstate->scratch_vertex);
         gles_glDeleteBuffers(1, &old_buffer);
@@ -1174,14 +1174,14 @@ void gl4es_scratch_vertex(int alloc) {
 }
 
 void gl4es_use_scratch_vertex(int use) {
-    LOAD_GLES(glBindBuffer);
+    LOAD_GLES2_(glBindBuffer);
     gles_glBindBuffer(GL_ARRAY_BUFFER, use?glstate->scratch_vertex:0);
 }
 
 void gl4es_scratch_indices(int alloc) {
-    LOAD_GLES(glBufferData);
-    LOAD_GLES(glBindBuffer);
-    LOAD_GLES(glGenBuffers);
+    LOAD_GLES2_(glBufferData);
+    LOAD_GLES2_(glBindBuffer);
+    LOAD_GLES2_(glGenBuffers);
     if(!glstate->scratch_indices) {
         glGenBuffers(1, &glstate->scratch_indices);
     }
@@ -1193,7 +1193,7 @@ void gl4es_scratch_indices(int alloc) {
 }
 
 void gl4es_use_scratch_indices(int use) {
-    LOAD_GLES(glBindBuffer);
+    LOAD_GLES2_(glBindBuffer);
     gles_glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, use?glstate->scratch_indices:0);
 }
 

@@ -328,7 +328,7 @@ void gl4es_glCompressedTexImage2D(GLenum target, GLint level, GLenum internalfor
         if (pixels!=datab)
             free(pixels);
     } else {
-        LOAD_GLES(glCompressedTexImage2D);
+        LOAD_GLES2_(glCompressedTexImage2D);
         bound->alpha = 1;
         bound->format = internalformat;
         bound->type = GL_UNSIGNED_BYTE;
@@ -360,7 +360,7 @@ void gl4es_glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, 
     GLvoid *datab = (GLvoid*)data;
     if (unpack)
         datab += (uintptr_t)unpack->data;
-    LOAD_GLES(glCompressedTexSubImage2D);
+    LOAD_GLES2_(glCompressedTexSubImage2D);
     errorGL();
     int simpleAlpha = 0;
     int complexAlpha = 0;

@@ -22,10 +22,10 @@ typedef struct array2vbo_s {
 
 int list2VBO(renderlist_t* list)
 {
-    LOAD_GLES2(glGenBuffers);
-    LOAD_GLES2(glBindBuffer);
-    LOAD_GLES2(glBufferData);
-    LOAD_GLES2(glBufferSubData);
+    LOAD_GLES2_(glGenBuffers);
+    LOAD_GLES2_(glBindBuffer);
+    LOAD_GLES2_(glBufferData);
+    LOAD_GLES2_(glBufferSubData);
     array2vbo_t work[ATT_MAX] = {0};
     // list -> work
     int imax = 0;
@@ -356,7 +356,7 @@ void draw_renderlist(renderlist_t *list) {
     LOAD_GLES_FPE(glTexCoordPointer);
     LOAD_GLES_FPE(glEnable);
     LOAD_GLES_FPE(glDisable);
-    LOAD_GLES2(glBindBuffer);
+    LOAD_GLES2_(glBindBuffer);
     gl4es_glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
 
 	int old_tex;
@@ -586,7 +586,7 @@ void draw_renderlist(renderlist_t *list) {
             if(!use_vbo_array) use_vbo_array = 1;
             stipple_old = glstate->gleshard->active;
             if(glstate->gleshard->active!=stipple_tmu) {
-                LOAD_GLES(glActiveTexture);
+                LOAD_GLES2_(glActiveTexture);
                 gl4es_glActiveTexture(GL_TEXTURE0+stipple_tmu);
             }
             TEXTURE(stipple_tmu);
@@ -737,8 +737,8 @@ void draw_renderlist(renderlist_t *list) {
                     int vbo_indices = 0;
                     if(!use_vbo_indices) {
                         // create VBO for indices
-                        LOAD_GLES2(glGenBuffers);
-                        LOAD_GLES2(glBufferData);
+                        LOAD_GLES2_(glGenBuffers);
+                        LOAD_GLES2_(glBufferData);
                         gles_glGenBuffers(1, &list->vbo_indices);
                         gles_glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, list->vbo_indices);
                         gles_glBufferData(GL_ELEMENT_ARRAY_BUFFER, list->ilen*sizeof(GLushort), indices, GL_STATIC_DRAW);
@@ -814,7 +814,7 @@ void draw_renderlist(renderlist_t *list) {
             if(!list->use_glstate)   //TODO: avoid that malloc/free...
                 free(list->tex[stipple_tmu]);
             list->tex[stipple_tmu]=NULL;
-            LOAD_GLES(glActiveTexture);
+            LOAD_GLES2_(glActiveTexture);
             if(glstate->gleshard->active!=stipple_tmu)
                 gl4es_glActiveTexture(GL_TEXTURE0+stipple_tmu);
             GLenum matmode;

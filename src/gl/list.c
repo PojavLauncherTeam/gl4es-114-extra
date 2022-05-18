@@ -671,7 +671,7 @@ renderlist_t* append_calllist(renderlist_t *list, renderlist_t *a)
 }
 
 void free_renderlist(renderlist_t *list) {
-    LOAD_GLES2(glDeleteBuffers);
+    LOAD_GLES2_(glDeleteBuffers);
 	// test if list is NULL
 	if (list == NULL)
 		return;

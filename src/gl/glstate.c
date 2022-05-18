@@ -43,7 +43,7 @@ static void free_framebuffer(glframebuffer_t *fb)
 
 static void free_texture(gltexture_t *tex)
 {
-    LOAD_GLES(glDeleteTextures);
+    LOAD_GLES2_(glDeleteTextures);
     if(!tex || !gles_glDeleteTextures)
         return;
     if(tex->glname)
@@ -382,7 +382,7 @@ void* NewGLState(void* shared_glstate, int es2only) {
 #if defined(AMIGAOS4) || defined(__EMSCRIPTEN__)
     if(!def) {// if it's default_glstate, then there is probably no glcontext...
 #endif
-    LOAD_GLES(glGetIntegerv);
+    LOAD_GLES2_(glGetIntegerv);
     gles_glGetIntegerv(GL_VIEWPORT, (GLint*)&glstate->raster.viewport);
     gles_glGetIntegerv(GL_SCISSOR_BOX, (GLint*)&glstate->raster.scissor);
 #if defined(AMIGAOS4) || defined(__EMSCRIPTEN__)
@@ -428,7 +428,7 @@ void* NewGLState(void* shared_glstate, int es2only) {
 #if defined(AMIGAOS4) || defined(__EMSCRIPTEN__)
     if(!def) // if it's default_glstate, then there is probably no glcontext...
     {
-    LOAD_GLES(glGetIntegerv);
+    LOAD_GLES2_(glGetIntegerv);
 #endif
     gles_glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT_OES, &glstate->readf);
     gles_glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_TYPE_OES, &glstate->readt);
@@ -598,7 +598,7 @@ void ActivateGLState(void* new_glstate) {
     if(glstate || newstate!=&default_glstate) // avoid getting gles info with no context
 #endif
     if(new_glstate && (newstate->raster.viewport.width==0 || newstate->raster.viewport.height==0)) {
-        LOAD_GLES(glGetIntegerv);
+        LOAD_GLES2_(glGetIntegerv);
         gles_glGetIntegerv(GL_VIEWPORT, (GLint*)&newstate->raster.viewport);
         gles_glGetIntegerv(GL_SCISSOR_BOX, (GLint*)&newstate->raster.scissor);
     }
