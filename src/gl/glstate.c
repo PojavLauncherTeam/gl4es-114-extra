@@ -8,6 +8,7 @@
 #include "init.h"
 #include "loader.h"
 #include "oldprogram.h"
+#include "vgpu/pack/load.h"
 
 glstate_t *glstate = NULL;
 

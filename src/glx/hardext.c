@@ -9,6 +9,7 @@
 #include "rpi.h"
 #endif
 #include "glx_gbm.h"
+#include "../gl/vgpu/pack/load.h"
 
 #ifndef EGL_PLATFORM_GBM_KHR
 #define EGL_PLATFORM_GBM_KHR                     0x31D7

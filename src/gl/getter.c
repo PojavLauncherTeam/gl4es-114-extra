@@ -8,6 +8,7 @@
 #include "light.h"
 #include "matvec.h"
 #include "texgen.h"
+#include "vgpu/pack/load.h"
 
 //#define DEBUG
 #ifdef DEBUG

@@ -1,5 +1,6 @@
 // load.h has been automatically processed by Batch_.c with raw material gl32.h.
 #include "gl32.h"
+#include "pack.h"
 
 #define GLESAPI_P extern
 

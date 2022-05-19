@@ -10,6 +10,7 @@
 #include "texgen.h"
 #include "render.h"
 #include "fpe.h"
+#include "vgpu/pack/load.h"
 
 /* return 1 if failed, 2 if succeed */
 typedef struct array2vbo_s {

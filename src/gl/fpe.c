@@ -12,6 +12,7 @@
 #include "shaderconv.h"
 #include "fpe_cache.h"
 #include "fpe.h"
+#include "vgpu/pack/load.h"
 
 //#define DEBUG
 #ifdef DEBUG
@@ -1015,7 +1016,7 @@ void realize_glenv(int ispoint, int first, int count, GLenum type, const void* i
     // the handling of GL_BGRA size of GL_DOUBLE using 1 scratch in not ideal, and a waste when dealing with Buffers
     // TODO: have the scratch buffer part of the VBO, and tag it dirty when buffer is changed (or always dirty for VBO 0)
     if(hardext.esversion==1) return;
-    LOAD_GLES2_(glEnableVertexAttribArray)
+    LOAD_GLES2_(glEnableVertexAttribArray);
     LOAD_GLES2_(glDisableVertexAttribArray);
     LOAD_GLES2_(glVertexAttribPointer);
     LOAD_GLES2_(glVertexAttrib4fv);

@@ -9,6 +9,8 @@
 #include "init.h"
 #include "loader.h"
 #include "logs.h"
+#include "vgpu/pack/load.h"
+
 #ifdef TEXSTREAM
 # ifndef GL_TEXTURE_STREAM_IMG
 # define GL_TEXTURE_STREAM_IMG                                   0x8C0D

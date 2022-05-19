@@ -15,6 +15,7 @@
 #include "matrix.h"
 #include "pixel.h"
 #include "raster.h"
+#include "vgpu/pack/load.h"
 
 KHASH_MAP_IMPL_INT(tex, gltexture_t *);
 

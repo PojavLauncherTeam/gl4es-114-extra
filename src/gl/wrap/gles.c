@@ -2,6 +2,8 @@
 #include "../gl4es.h"
 #include "../loader.h"
 #include "skips.h"
+#include "../vgpu/pack/load.h"
+
 #ifndef skip_glActiveTexture
 void gl4es_glActiveTexture(GLenum texture) {
     LOAD_GLES2_(glActiveTexture);
