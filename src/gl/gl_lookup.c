@@ -22,6 +22,7 @@
 
 #define STUB_FCT gl4es_Stub
 #include "gl_lookup.h"
+#include "vgpu/pack/pack.h"
 
 void gl4es_Stub(void *x, ...) {
     return;
@@ -139,7 +140,7 @@ void *gl4es_GetProcAddress(const char *name) {
         _ARB(glFramebufferTextureLayer);
         _ARB(glBlitFramebuffer);
         _EX(glDrawBuffers);
-        _ARB(glDrawBuffers);
+        __ARB(glDrawBuffers);
         _EX(glClearBufferiv);
         _EX(glClearBufferuiv);
         _EX(glClearBufferfv);

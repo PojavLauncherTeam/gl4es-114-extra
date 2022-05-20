@@ -21,6 +21,8 @@
 
 #define _ARB(func_name) MAP(#func_name "ARB", gl4es_ ## func_name)
 
+#define __ARB(func_name) MAP(#func_name "ARB", func_name)	// glDrawBuffersARB()
+
 #define _EXT(func_name) MAP(#func_name "EXT", gl4es_ ## func_name)
 
 #ifndef STUB_FCT
