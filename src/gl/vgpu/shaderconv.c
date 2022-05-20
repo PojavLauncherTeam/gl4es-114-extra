@@ -54,6 +54,7 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
     source = ReplaceVariableName(source, &sourceLength, "texture", "vgpu_texture");
 
     source = ReplaceFunctionName(source, &sourceLength, "texture2D", "texture");
+    source = ReplaceFunctionName(source, &sourceLength, "texture2DLod", "textureLod");
 
 
     //printf("REMOVING \" CHARS ");
