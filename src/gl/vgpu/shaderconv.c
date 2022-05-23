@@ -148,8 +148,8 @@ char * WrapIvecFunctions(char * source, int * sourceLength){
                                                                                  "#ifdef GL_EXT_texture_buffer\n"
                                                                                  "vec4 vgpu_texelFetch(samplerBuffer sampler, float P){return texelFetch(sampler, int(P));}\n"
                                                                                  "#endif\n"
-                                                                                 "vec4 vgpu_texelFetch(sampler2DMS sampler, vec2 P, float _sample){return texelFetch(sampler, ivec2(int(P.x), int(P.y)), int(_sample));}\n"
                                                                                  "#ifdef GL_OES_texture_storage_multisample_2d_array\n"
+                                                                                 "vec4 vgpu_texelFetch(sampler2DMS sampler, vec2 P, float _sample){return texelFetch(sampler, ivec2(int(P.x), int(P.y)), int(_sample));}\n"
                                                                                  "vec4 vgpu_texelFetch(sampler2DMSArray sampler, vec3 P, float _sample){return texelFetch(sampler, ivec3(int(P.x), int(P.y), int(P.z)), int(_sample));}\n"
                                                                                  "#endif\n");
 
@@ -167,8 +167,8 @@ char * WrapIvecFunctions(char * source, int * sourceLength){
                                                                                    "#ifdef GL_EXT_texture_buffer\n"
                                                                                    "float vgpu_textureSize(samplerBuffer sampler){return float(textureSize(sampler));}\n"
                                                                                    "#endif\n"
-                                                                                   "vec2 vgpu_textureSize(sampler2DMS sampler){ivec2 size = textureSize(sampler);return vec2(size.x, size.y);}\n"
                                                                                    "#ifdef GL_OES_texture_storage_multisample_2d_array\n"
+                                                                                   "vec2 vgpu_textureSize(sampler2DMS sampler){ivec2 size = textureSize(sampler);return vec2(size.x, size.y);}\n"
                                                                                    "vec3 vgpu_textureSize(sampler2DMSArray sampler){ivec3 size = textureSize(sampler);return vec3(size.x, size.y, size.z);}\n"
                                                                                    "#endif\n");
 
@@ -780,7 +780,6 @@ char * ReplacePrecisionQualifiers(char * source, int * sourceLength){
                                    "precision lowp samplerCubeShadow;\n"
                                    "precision lowp sampler2DArray;\n"
                                    "precision lowp sampler2DArrayShadow;\n"
-                                   "precision lowp sampler2DMS;\n"
                                    "precision lowp samplerCube;\n"
                                    "precision lowp image2D;\n"
                                    "precision lowp image2DArray;\n"
@@ -796,6 +795,7 @@ char * ReplacePrecisionQualifiers(char * source, int * sourceLength){
                                    "precision lowp samplerCubeArrayShadow;\n"
                                    "#endif\n"
                                    "#ifdef GL_OES_texture_storage_multisample_2d_array\n"
+                                   "precision lowp sampler2DMS;\n"
                                    "precision lowp sampler2DMSArray;\n"
                                    "#endif\n");
 
