@@ -176,14 +176,14 @@ char * WrapIvecFunctions(char * source, int * sourceLength){
                                                                                    "vec3 vgpu_textureSize(sampler2DMSArray sampler){ivec3 size = textureSize(sampler);return vec3(size.x, size.y, size.z);}\n"
                                                                                    "#endif\n");
 
-    source = WrapFunction(source, sourceLength, "textureOffset", "vgpu_textureOffset", "\nvec4 vgpu_textureOffset(sampler2D sampler, vec2 P, vec2 offset){const ivec2 const_offset = ivec2(int(offset.x), int(offset.y)); return textureOffset(sampler, P, const_offset);}\n"
-                                                                                       "vec4 vgpu_textureOffset(sampler2D sampler, vec2 P, vec2 offset, float bias){const ivec2 const_offset = ivec2(int(offset.x), int(offset.y)); return textureOffset(sampler, P, const_offset, bias);}\n"
-                                                                                       "vec4 vgpu_textureOffset(sampler3D sampler, vec3 P, vec3 offset){const ivec3 const_offset = ivec3(int(offset.x), int(offset.y), int(offset.z); return textureOffset(sampler, P, const_offset);}\n"
-                                                                                       "vec4 vgpu_textureOffset(sampler3D sampler, vec3 P, vec3 offset, float bias){const ivec3 const_offset = ivec3(int(offset.x), int(offset.y), int(offset.z); return textureOffset(sampler, P, const_offset, bias);}\n"
-                                                                                       "vec4 vgpu_textureOffset(sampler2DShadow sampler, vec3 P, vec2 offset){const ivec2 const_offset = ivec2(int(offset.x), int(offset.y)); return textureOffset(sampler, P, const_offset);}\n"
-                                                                                       "vec4 vgpu_textureOffset(sampler2DShadow sampler, vec3 P, vec2 offset, float bias){const ivec2 const_offset = ivec2(int(offset.x), int(offset.y)); return textureOffset(sampler, P, const_offset, bias);}\n"
-                                                                                       "vec4 vgpu_textureOffset(sampler2DArray sampler, vec3 P, vec2 offset){const ivec2 const_offset = ivec2(int(offset.x), int(offset.y)); return textureOffset(sampler, P, const_offset);}\n"
-                                                                                       "vec4 vgpu_textureOffset(sampler2DArray sampler, vec3 P, vec2 offset, float bias){const ivec2 const_offset = ivec2(int(offset.x), int(offset.y)); return textureOffset(sampler, P, const_offset, bias);}\n");
+    source = WrapFunction(source, sourceLength, "textureOffset", "vgpu_textureOffset", "\nvec4 vgpu_textureOffset(sampler2D sampler, vec2 P, vec2 offset){return textureOffset(sampler, P, ivec2(int(offset.x), int(offset.y)));}\n"
+                                                                                       "vec4 vgpu_textureOffset(sampler2D sampler, vec2 P, vec2 offset, float bias){return textureOffset(sampler, P, ivec2(int(offset.x), int(offset.y)), bias);}\n"
+                                                                                       "vec4 vgpu_textureOffset(sampler3D sampler, vec3 P, vec3 offset){return textureOffset(sampler, P, ivec3(int(offset.x), int(offset.y), int(offset.y)));}\n"
+                                                                                       "vec4 vgpu_textureOffset(sampler3D sampler, vec3 P, vec3 offset, float bias){return textureOffset(sampler, P, ivec3(int(offset.x), int(offset.y), int(offset.x)), bias);}\n"
+                                                                                       "vec4 vgpu_textureOffset(sampler2DShadow sampler, vec3 P, vec2 offset){return textureOffset(sampler, P, ivec2(int(offset.x), int(offset.y)));}\n"
+                                                                                       "vec4 vgpu_textureOffset(sampler2DShadow sampler, vec3 P, vec2 offset, float bias){return textureOffset(sampler, P, ivec2(int(offset.x), int(offset.y)), bias);}\n"
+                                                                                       "vec4 vgpu_textureOffset(sampler2DArray sampler, vec3 P, vec2 offset){return textureOffset(sampler, P, ivec2(int(offset.x), int(offset.y)));}\n"
+                                                                                       "vec4 vgpu_textureOffset(sampler2DArray sampler, vec3 P, vec2 offset, float bias){return textureOffset(sampler, P, ivec2(int(offset.x), int(offset.y)), bias);}\n");
 
     source = WrapFunction(source, sourceLength, "shadow2D", "vgpu_shadow2D", "\nvec4 vgpu_shadow2D(sampler2DShadow shadow, vec3 coord){return vec4(texture(shadow, coord), 0.0, 0.0, 0.0);}\n"
                                                                               "vec4 vgpu_shadow2D(sampler2DShadow shadow, vec3 coord, float bias){return vec4(texture(shadow, coord, bias), 0.0, 0.0, 0.0);}\n");
@@ -765,7 +765,6 @@ int FindPositionAfterVersion(char * source){
  * @return The shader as a string, maybe in a different memory location
  */
 char * ReplacePrecisionQualifiers(char * source, int * sourceLength){
-
 
     // Step 1 is to remove any "precision" qualifiers
     for(unsigned long currentPosition=strstrPos(source, "precision "); currentPosition>0;currentPosition=strstrPos(source, "precision ")){
