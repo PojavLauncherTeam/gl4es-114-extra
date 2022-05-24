@@ -135,10 +135,7 @@ char * InsertExtension(char * source, int * sourceLength, const int insertPoint,
 }
 
 int doesShaderVersionContainsES(const char * source){
-    if(FindString(source, "#version 300 es") || FindString(source, "#version 310 es") || FindString(source, "#version 320 es")){
-        return 1;
-    }
-    return 0;
+    return GetShaderVersion(source) >= 300;
 }
 
 char * WrapIvecFunctions(char * source, int * sourceLength){
@@ -781,10 +778,6 @@ char * ReplacePrecisionQualifiers(char * source, int * sourceLength){
                                    "precision lowp sampler2DArray;\n"
                                    "precision lowp sampler2DArrayShadow;\n"
                                    "precision lowp samplerCube;\n"
-                                   "precision lowp image2D;\n"
-                                   "precision lowp image2DArray;\n"
-                                   "precision lowp image3D;\n"
-                                   "precision lowp imageCube;\n"
                                    "#ifdef GL_EXT_texture_buffer\n"
                                    "precision lowp samplerBuffer;\n"
                                    "precision lowp imageBuffer;\n"
@@ -798,6 +791,14 @@ char * ReplacePrecisionQualifiers(char * source, int * sourceLength){
                                    "precision lowp sampler2DMS;\n"
                                    "precision lowp sampler2DMSArray;\n"
                                    "#endif\n");
+    if(GetShaderVersion(source) > 300){
+        source = InplaceInsertByIndex(source, sourceLength,insertPoint,
+                                      "\nprecision lowp image2D;\n"
+                                      "precision lowp image2DArray;\n"
+                                      "precision lowp image3D;\n"
+                                      "precision lowp imageCube;\n");
+    }
+
 
 
 
@@ -949,4 +950,19 @@ char * insertIntAtFunctionCall(char * source, int * sourceSize, const char * fun
         functionCallPosition += offset + strlen(functionName);
     }
     return source;
+}
+
+/**
+ * @param source The shader as a string
+ * @return The shader version: eg. 310 for #version 310 es
+ */
+int GetShaderVersion(const char * source){
+    // Oh yeah, I won't care much about this function
+    if(FindString(source, "#version 320 es")){return 320;}
+    if(FindString(source, "#version 310 es")){return 310;}
+    if(FindString(source, "#version 300 es")){return 300;}
+    if(FindString(source, "#version 150")){return 150;}
+    if(FindString(source, "#version 130")){return 130;}
+    if(FindString(source, "#version 120")){return 120;}
+    return 100;
 }
