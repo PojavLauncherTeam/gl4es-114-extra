@@ -9,12 +9,6 @@
 #include "../logs.h"
 #include "../const.h"
 
-// Version expected to be replaced
-char * old_version = "#version 120";
-// The version we will declare as
-//char * new_version = "#version 450 compatibility";
-char * new_version = "#version 320 es\n";
-
 int NO_OPERATOR_VALUE = 9999;
 
 /** Convert the shader through multiple steps
