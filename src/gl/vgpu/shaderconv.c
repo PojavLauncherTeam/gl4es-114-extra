@@ -8,6 +8,7 @@
 #include "../string_utils.h"
 #include "../logs.h"
 #include "../const.h"
+#include "../../glx/hardext.h"
 
 int NO_OPERATOR_VALUE = 9999;
 
@@ -101,7 +102,7 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
     }
 
     //printf("FUCKING UP PRECISION");
-    source = ReplacePrecisionQualifiers(source, &sourceLength);
+    source = ReplacePrecisionQualifiers(source, &sourceLength, shader_source->type == GL_VERTEX_SHADER);
 
     if (globals4es.vgpu_dump){
         printf("New VGPU Shader conversion:\n%s\n", source);
@@ -751,7 +752,14 @@ int FindPositionAfterVersion(char * source){
  * @param sourceLength The length of the string
  * @return The shader as a string, maybe in a different memory location
  */
-char * ReplacePrecisionQualifiers(char * source, int * sourceLength){
+char * ReplacePrecisionQualifiers(char * source, int * sourceLength, int isVertex){
+
+    if(!doesShaderVersionContainsES(source)){
+        if (globals4es.vgpu_dump) {
+            printf("SKIPPING the replacement qualifiers step");
+        }
+        return source;
+    }
 
     // Step 1 is to remove any "precision" qualifiers
     for(unsigned long currentPosition=strstrPos(source, "precision "); currentPosition>0;currentPosition=strstrPos(source, "precision ")){
@@ -764,8 +772,7 @@ char * ReplacePrecisionQualifiers(char * source, int * sourceLength){
 
     int insertPoint = FindPositionAfterDirectives(source);
     source = InplaceInsertByIndex(source, sourceLength, insertPoint,
-                                   "\nprecision lowp float;\n"
-                                   "precision lowp sampler2D;\n"
+                                   "\nprecision lowp sampler2D;\n"
                                    "precision lowp sampler3D;\n"
                                    "precision lowp sampler2DShadow;\n"
                                    "precision lowp samplerCubeShadow;\n"
@@ -785,6 +792,7 @@ char * ReplacePrecisionQualifiers(char * source, int * sourceLength){
                                    "precision lowp sampler2DMS;\n"
                                    "precision lowp sampler2DMSArray;\n"
                                    "#endif\n");
+
     if(GetShaderVersion(source) > 300){
         source = InplaceInsertByIndex(source, sourceLength,insertPoint,
                                       "\nprecision lowp image2D;\n"
@@ -792,9 +800,8 @@ char * ReplacePrecisionQualifiers(char * source, int * sourceLength){
                                       "precision lowp image3D;\n"
                                       "precision lowp imageCube;\n");
     }
-
-
-
+    int supportHighp = ((isVertex || hardext.highp) ? 1 : 0);
+    source = InplaceInsertByIndex(source, sourceLength, insertPoint, supportHighp ? "\nprecision highp float;\n" : "\nprecision medium float;\n");
 
     if (globals4es.vgpu_precision != 0){
         char * target_precision;

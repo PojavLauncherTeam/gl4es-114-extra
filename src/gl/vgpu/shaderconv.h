@@ -24,7 +24,7 @@ char * ReplaceVariableName(char * source, int * sourceLength, char * initialName
 char * ReplaceFunctionName(char * source, int * sourceLength, char * initialName, char * finalName);
 char * RemoveUnsupportedExtensions(char * source);
 int doesShaderVersionContainsES(const char * source);
-char *ReplacePrecisionQualifiers(char *source, int *sourceLength);
+char *ReplacePrecisionQualifiers(char *source, int *sourceLength, int isVertex);
 char * GetClosingTokens(char openingToken);
 int isOpeningToken(char openingToken);
 int GetClosingTokenPosition(const char * source, int initialTokenPosition);
