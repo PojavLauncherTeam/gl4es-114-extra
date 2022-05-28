@@ -959,9 +959,17 @@ char * insertIntAtFunctionCall(char * source, int * sourceSize, const char * fun
  */
 int GetShaderVersion(const char * source){
     // Oh yeah, I won't care much about this function
-    if(FindString(source, "#version 320 es")){return 320;}
-    if(FindString(source, "#version 310 es")){return 310;}
-    if(FindString(source, "#version 300 es")){return 300;}
+    if(FindString(source, "#version 460")){return 460;}
+    if(FindString(source, "#version 450")){return 450;}
+    if(FindString(source, "#version 440")){return 440;}
+    if(FindString(source, "#version 430")){return 430;}
+    if(FindString(source, "#version 420")){return 420;}
+    if(FindString(source, "#version 410")){return 410;}
+    if(FindString(source, "#version 400")){return 400;}
+    if(FindString(source, "#version 330")){return 330;}
+    if(FindString(source, "#version 320")){return 320;}
+    if(FindString(source, "#version 310")){return 310;}
+    if(FindString(source, "#version 300")){return 300;}
     if(FindString(source, "#version 150")){return 150;}
     if(FindString(source, "#version 130")){return 130;}
     if(FindString(source, "#version 120")){return 120;}

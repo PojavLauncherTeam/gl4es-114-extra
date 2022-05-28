@@ -9,6 +9,7 @@
 #include "string_utils.h"
 #include "shader_hacks.h"
 #include "logs.h"
+#include "vgpu/shaderconv.h"
 
 typedef struct {
     const char* glname;
@@ -485,7 +486,7 @@ char* ConvertShader(const char* pEntry, int isVertex, shaderconv_need_t *need)
   if(wanthighp && !hardext.highp) wanthighp = 0;
   int versionHeader = 0;
   SHUT_LOGD("version string: %s", versionString);
-  if(versionString && (strcmp(versionString, "120")==0 || strstr(versionString, "150") != NULL))
+  if(versionString && GetShaderVersion(versionString) > 100)
      version120 = 1;
   if(version120) {
     if(hardext.glsl120) versionHeader = 1;
