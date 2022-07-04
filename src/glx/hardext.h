@@ -1,3 +1,7 @@
+
+
+#include "../gl/program.h"
+
 #ifndef _GLX_HARDEXT_H_
 #define _GLX_HARDEXT_H_
 
@@ -69,5 +73,6 @@ typedef struct _hardext {
 extern hardext_t hardext;
 
 void GetHardwareExtensions(int test);
+int testGenericShader(struct shader_s * shader_source);
 
 #endif

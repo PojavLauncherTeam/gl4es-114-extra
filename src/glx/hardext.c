@@ -18,6 +18,32 @@ static int tested = 0;
 
 hardext_t hardext = {0};
 
+int testGenericShader(struct shader_s* shader_source) {
+    // check the current shader is valid for compilation
+    LOAD_GLES2(glCreateShader);
+    LOAD_GLES2(glShaderSource);
+    LOAD_GLES2(glCompileShader);
+    LOAD_GLES2(glGetShaderiv);
+    LOAD_GLES2(glDeleteShader);
+
+    GLuint shad = gles_glCreateShader(GL_VERTEX_SHADER);
+    gles_glShaderSource(shad, 1, (const GLchar *const *)(&shader_source->converted), NULL);
+    gles_glCompileShader(shad);
+    GLint compiled;
+    gles_glGetShaderiv(shad, GL_COMPILE_STATUS, &compiled);
+    /*
+    if(!compiled) {
+        LOAD_GLES2(glGetShaderInfoLog)
+        char buff[500];
+        gles_glGetShaderInfoLog(shad, 500, NULL, buff);
+        printf("LIBGL: \"%s\" failed, message:\n%s\n", version, buff);
+    }
+    */
+    gles_glDeleteShader(shad);
+
+    return compiled;
+}
+
 static int testGLSL(const char* version, int uniformLoc) {
     // check if glsl 120 shaders are supported... by compiling one !
     LOAD_GLES2(glCreateShader);

@@ -1,5 +1,4 @@
 #include "shader.h"
-
 #include "../glx/hardext.h"
 #include "debug.h"
 #include "init.h"
@@ -180,7 +179,10 @@ void gl4es_glShaderSource(GLuint shader, GLsizei count, const GLchar * const *st
             glshader->converted = strdup(glshader->source);
         else{
             glshader->converted = ConvertShader(glshader->source, glshader->type == GL_VERTEX_SHADER ? 1 : 0,&glshader->need);
-            glshader->converted = ConvertShaderVgpu(glshader);
+            // Test whether the shader need additional conversion
+            if(!testGenericShader(glshader)){
+                glshader->converted = ConvertShaderVgpu(glshader);
+            }
         }
 
         // send source to GLES2 hardware if any
@@ -238,7 +240,10 @@ void redoShader(GLuint shader, shaderconv_need_t *need) {
     free(glshader->converted);
     memcpy(&glshader->need, need, sizeof(shaderconv_need_t));
     glshader->converted = ConvertShader(glshader->source, glshader->type==GL_VERTEX_SHADER?1:0, &glshader->need);
-    glshader->converted = ConvertShaderVgpu(glshader);
+    // Test whether the shader need additional conversion
+    if(!testGenericShader(glshader)){
+        glshader->converted = ConvertShaderVgpu(glshader);
+    }
     // send source to GLES2 hardware if any
     gles_glShaderSource(shader, 1, (const GLchar * const*)((glshader->converted)?(&glshader->converted):(&glshader->source)), NULL);
     // recompile...
