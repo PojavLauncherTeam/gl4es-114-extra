@@ -29,12 +29,16 @@ char * GetClosingTokens(char openingToken);
 int isOpeningToken(char openingToken);
 int GetClosingTokenPosition(const char * source, int initialTokenPosition);
 int GetClosingTokenPositionTokenOverride(const char * source, int initialTokenPosition, char initialToken);
-int GetNextTokenPosition(const char * source, int initialPosition, const char token, const char * acceptedChars);
+int GetNextTokenPosition(const char * source, int initialPosition, char token, const char * acceptedChars);
+void GetNextWord(char *source, int startPoint, int * startWord, int * endWord);
 unsigned long strstrPos(const char * haystack, const char * needle);
 char * insertIntAtFunctionCall(char * source, int * sourceSize, const char * functionName, int argumentPosition);
 char * InsertExtension(char * source, int * sourceLength, int insertPoint, const char * extension);
 char * InsertExtensions(char *source, int *sourceLength);
 int GetShaderVersion(const char * source);
+char * ReplaceFragmentOut(char * source, int *sourceLength);
+char * BackportConstArrays(char *source, int * sourceLength);
+char * ExtractString(char * source, int startString, int endString);
 
 
 char* GetOperandFromOperator(char* source, int operatorIndex, int rightOperand, int * limit);

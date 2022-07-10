@@ -343,6 +343,11 @@ Override the precision used on the pipeline
 * 3 : Force lowp where possible
 Many drivers map lowp to the same precision as mediump
 
+##### LIBGL_VGPU_BACKPORT
+Whether the shader gets forcefully backported to the #version 100
+* 0 : Default, don't attempt to forcefully backport the shader
+* 1 : Try to forcefully backport the shader. The resulting shader might bug but it compiles.
+
 ##### LIBGL_NOPSA
 Disable the use of the Precompiled Shader Archive
 * 0 : Default: use (and save) the PSA (it's saved on $HOME/.gl4es.psa on linux)

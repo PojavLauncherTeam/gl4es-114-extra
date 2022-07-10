@@ -609,6 +609,7 @@ void initialize_gl4es() {
     // VGPU pipeline stuff
     env(LIBGL_VGPU_DUMP, globals4es.vgpu_dump, "Dump the content of VGPU shader conversion");
     env(LIBGL_VGPU_FORCE, globals4es.vgpu_force_conv, "Force VGPU pipeline to convert every shader")
+    env(LIBGL_VGPU_BACKPORT, globals4es.vgpu_backport, "Attempt HARD to backport shaders to #version 100")
     globals4es.vgpu_precision = ReturnEnvVarIntDef("LIBGL_VGPU_PRECISION", 0);
     if(globals4es.vgpu_precision != 0){
         SHUT_LOGD("VGPU default precision overridden ! (%i)", globals4es.vgpu_precision);

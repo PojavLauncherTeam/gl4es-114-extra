@@ -67,6 +67,7 @@ typedef struct _globals4es {
  int vgpu_dump;         // Whether vgpu dumps the shader input and output.
  int vgpu_force_conv;   // Whether vgpu is forced to convert all shaders
  int vgpu_precision;    // The level of precision used by vgpu
+ int vgpu_backport;     // Whether we try hard to backport shaders to #version 100
  int nopsa;
  int noes2;
  int nointovlhack;

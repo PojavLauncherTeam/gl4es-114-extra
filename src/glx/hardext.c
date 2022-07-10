@@ -444,6 +444,11 @@ void GetHardwareExtensions(int notest)
         SHUT_LOGD("GLSL 320 es supported%s\n", hardext.glsl320es?"":" and used");
 	    hardext.drawbuffers = 1;
     }
+
+    if(!hardext.glsl300es){
+        // We can't use the vgpu forward conversion
+        globals4es.vgpu_backport = 1;
+    }
 	
     if(hardext.drawbuffers) {
         gles_glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS_EXT,&hardext.maxcolorattach);
