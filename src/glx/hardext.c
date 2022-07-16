@@ -26,7 +26,7 @@ int testGenericShader(struct shader_s* shader_source) {
     LOAD_GLES2(glGetShaderiv);
     LOAD_GLES2(glDeleteShader);
 
-    GLuint shad = gles_glCreateShader(GL_VERTEX_SHADER);
+    GLuint shad = gles_glCreateShader(shader_source->type);
     gles_glShaderSource(shad, 1, (const GLchar *const *)(&shader_source->converted), NULL);
     gles_glCompileShader(shad);
     GLint compiled;

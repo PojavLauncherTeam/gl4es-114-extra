@@ -26,6 +26,7 @@ char * ConvertShaderConditionally(struct shader_s * shader_source){
 
     // Then, attempt back porting if desired of constrained to do so
     if(!shaderCompileStatus && globals4es.vgpu_backport) {
+        shader_source->converted = ConvertShader(shader_source->source, shader_source->type == GL_VERTEX_SHADER ? 1 : 0,&shader_source->need, 0);
         shader_source->converted = ConvertShaderVgpu(shader_source);
         shaderCompileStatus = testGenericShader(shader_source);
     }
@@ -81,6 +82,12 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
 
             return source;
         }
+
+        // Else, skip the conversion
+        if (globals4es.vgpu_dump){
+            printf("SKIPPING OLD SHADER CONVERSION \n");
+        }
+        return source;
     }
 
 
@@ -979,7 +986,7 @@ char * ReplacePrecisionQualifiers(char * source, int * sourceLength, int isVerte
 
     if(!doesShaderVersionContainsES(source)){
         if (globals4es.vgpu_dump) {
-            printf("SKIPPING the replacement qualifiers step");
+            printf("\nSKIPPING the replacement qualifiers step\n");
         }
         return source;
     }
