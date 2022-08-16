@@ -1045,8 +1045,9 @@ void realize_glenv(int ispoint, int first, int count, GLenum type, const void* i
                 }
                 glstate->fpe_state->texture[i].texformat = tex->fpe_format;
                 glstate->fpe_state->texture[i].texadjust = tex->adjust;
-                if(texunit==ENABLED_TEXTURE_RECTANGLE) glstate->fpe_state->texture[i].texadjust = 1;
+                if(texunit==ENABLED_TEXTURE_RECTANGLE) glstate->fpe_state->texture[i].texadjust |= 1<<i;
                 glstate->fpe_state->texture[i].textype = fmt;
+                
             }
         }
         glstate->fpe_bound_changed = 0;
