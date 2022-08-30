@@ -10,9 +10,15 @@ jobs:
          wget https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip
          unzip android-ndk-r16b-linux-x86_64.zip >> /dev/null
          ./android-ndk-r16b/ndk-build APP_BUILD_SCRIPT=./Android.mk NDK_PROJECT_PATH=.
+         ./android-ndk-r16b/ndk-build APP_BUILD_SCRIPT=./Android_debug.mk NDK_PROJECT_PATH=.
       - name: Upload GL4ES libs
         uses: actions/upload-artifact@v2
         with:
           name: gl4es-114
           path: libs/*
+      - name: Upload GL4ES debug libs
+        uses: actions/upload-artifact@v2
+        with:
+          name: gl4es-114
+          path: 'obj/**/*.so'
         
