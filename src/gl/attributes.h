@@ -2,7 +2,7 @@
 #define _GL4ES_ATTRIBUTES_H_
 
 #ifndef EXPORT
- #if defined(__EMSCRIPTEN__) || defined(__APPLE__)
+ #if defined(__EMSCRIPTEN__) //|| defined(__APPLE__)
    #define EXPORT
  #elif defined(STATICLIB)
    #define EXPORT
@@ -14,6 +14,7 @@
 #ifndef AliasExport
  #if defined(__EMSCRIPTEN__) || defined(__APPLE__)
   #define AliasExport(name)
+//   EXPORT { __asm__("add sp, sp, #0x10 \n b _" name " \n ret"); }
  #else
   #define AliasExport(name)   __attribute__((alias(name))) EXPORT
  #endif

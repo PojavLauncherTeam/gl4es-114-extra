@@ -93,6 +93,12 @@ typedef Display *EGLNativeDisplayType;
 typedef Pixmap   EGLNativePixmapType;
 typedef Window   EGLNativeWindowType;
 
+#elif defined(__APPLE__)
+
+typedef int   EGLNativeDisplayType;
+typedef void *EGLNativePixmapType;
+typedef void *EGLNativeWindowType;
+
 #elif defined(ANDROID)
 
 typedef int   EGLNativeDisplayType;

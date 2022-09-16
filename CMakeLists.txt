@@ -142,7 +142,7 @@ if(USE_CCACHE)
 endif()
 
 link_directories(${CMAKE_SOURCE_DIR}/lib)
-add_definitions(-std=gnu11 -funwind-tables -fvisibility=hidden)
+add_definitions(-std=gnu11 -funwind-tables -fvisibility=default)
 
 if (CMAKE_CC_COMPILER_ID MATCHES "Clang" OR CMAKE_SYSTEM_NAME MATCHES "Emscripten")
     add_definitions(-Wno-pointer-sign -Wno-dangling-else)

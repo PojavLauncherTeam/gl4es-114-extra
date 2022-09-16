@@ -861,7 +861,11 @@ void gl4es_glCallList(GLuint list) {
     if (l)
         draw_renderlist(l);
 }
+#ifndef __APPLE__
 void glCallList(GLuint list) AliasExport("gl4es_glCallList");
+#else
+void glCallList(GLuint list) { gl4es_glCallList(list); }
+#endif
 
 void glPushCall(void *call) {
     if (glstate->list.active) {

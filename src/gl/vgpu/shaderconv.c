@@ -3,7 +3,7 @@
 //
 #include <math.h>
 #include <string.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include "shaderconv.h"
 #include "../string_utils.h"
 #include "../logs.h"

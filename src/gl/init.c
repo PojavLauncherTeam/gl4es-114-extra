@@ -13,7 +13,7 @@
 #include "fpe_cache.h"
 #include "init.h"
 #include "envvars.h"
-#if defined(__EMSCRIPTEN__) || defined(__APPLE__)
+#if defined(__EMSCRIPTEN__)
 #define NO_INIT_CONSTRUCTOR
 #endif
 

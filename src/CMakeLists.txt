@@ -65,6 +65,7 @@ SET(GL_SRC
     gl/texture_3d.c
     gl/uniform.c
     gl/vertexattrib.c
+    gl/vgpu/shaderconv.c
 	gl/wrap/gl4eswraps.c
 	gl/wrap/gles.c
 	gl/wrap/glstub.c
@@ -204,6 +205,12 @@ else()
     endif()
     if(USE_CLOCK)
         target_link_libraries(GL rt)
+    endif()
+    if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+        target_link_libraries(GL
+            "-F../../external"
+            "-framework MetalANGLE"
+        )
     endif()
     
     if(CMAKE_SHARED_LIBRARY_SUFFIX MATCHES ".so")
