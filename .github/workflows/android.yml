@@ -7,10 +7,10 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build GL4ES
         run: |
-         wget https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip
-         unzip android-ndk-r16b-linux-x86_64.zip >> /dev/null
-         ./android-ndk-r16b/ndk-build APP_BUILD_SCRIPT=./Android.mk NDK_PROJECT_PATH=.
-         ./android-ndk-r16b/ndk-build APP_BUILD_SCRIPT=./Android_debug.mk NDK_PROJECT_PATH=.
+         wget https://dl.google.com/android/repository/android-ndk-r17c-linux-x86_64.zip
+         unzip android-ndk-r17c-linux-x86_64.zip >> /dev/null
+         ./android-ndk-r17c/ndk-build APP_BUILD_SCRIPT=./Android.mk NDK_PROJECT_PATH=.
+         ./android-ndk-r17c/ndk-build APP_BUILD_SCRIPT=./Android_debug.mk NDK_PROJECT_PATH=.
       - name: Upload GL4ES libs
         uses: actions/upload-artifact@v2
         with:
