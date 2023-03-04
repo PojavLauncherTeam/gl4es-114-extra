@@ -349,6 +349,7 @@ char * InsertExtensions(char *source, int *sourceLength){
     source = InsertExtension(source, sourceLength, insertPoint+1, "GL_EXT_texture_cube_map_array");
     source = InsertExtension(source, sourceLength, insertPoint+1, "GL_EXT_texture_buffer");
     source = InsertExtension(source, sourceLength, insertPoint+1, "GL_OES_texture_storage_multisample_2d_array");
+    source = InsertExtension(source, sourceLength, insertPoint + 1, "GL_OES_texture_3D");
     return source;
 }
 
