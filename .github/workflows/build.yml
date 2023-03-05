@@ -1,0 +1,37 @@
+name: Build gl4es-114
+on: [push, workflow_dispatch]
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build GL4ES
+        run: |
+         # wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
+         # unzip android-ndk-r25c-linux.zip >> /dev/null
+         $ANDROID_NDK_HOME/ndk-build APP_BUILD_SCRIPT=./Android.mk NDK_PROJECT_PATH=.
+         $ANDROID_NDK_HOME/ndk-build APP_BUILD_SCRIPT=./Android_debug.mk NDK_PROJECT_PATH=.
+      - name: Upload GL4ES libs
+        uses: actions/upload-artifact@v2
+        with:
+          name: gl4es-114-android
+          path: libs/*
+      - name: Upload GL4ES debug libs
+        uses: actions/upload-artifact@v2
+        with:
+          name: gl4es-114-android
+          path: 'obj/**/*.so'
+  build-ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build GL4ES
+        run: |
+          wget https://github.com/leetal/ios-cmake/raw/master/ios.toolchain.cmake
+          cmake -B build -DCMAKE_TOOLCHAIN_FILE=ios.toolchain.cmake -DDEFAULT_ES=2 -DNOX11=ON -DNOEGL=ON -DSTATICLIB=OFF -DPLATFORM=OS64 -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED="NO" -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED=NO -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY=""
+          cmake --build build --config RelWithDebInfo --target GL
+      - name: Upload lib
+        uses: actions/upload-artifact@v2
+        with:
+          name: gl4es-114-ios
+          path: lib/Release
