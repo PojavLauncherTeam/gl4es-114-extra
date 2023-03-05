@@ -52,7 +52,6 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
     // Get the shader source
     char * source = shader_source->converted;
     int sourceLength = strlen(source) + 1;
-
     // For now, skip stuff
     if(FindString(source, "#version 100")){
         if(globals4es.vgpu_force_conv || globals4es.vgpu_backport){
@@ -85,7 +84,7 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
 
         // Else, skip the conversion
         if (globals4es.vgpu_dump){
-            printf("SKIPPING OLD SHADER CONVERSION \n");
+            printf("SKIPPING OLD SHADER CONVERSION \n%s\n", source);
         }
         return source;
     }
@@ -106,6 +105,7 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
     source = ReplaceVariableName(source, &sourceLength, "texture", "vgpu_texture");
 
     source = ReplaceFunctionName(source, &sourceLength, "texture2D", "texture");
+    source = ReplaceFunctionName(source, &sourceLength, "texture3D", "texture");
     source = ReplaceFunctionName(source, &sourceLength, "texture2DLod", "textureLod");
 
 
@@ -349,7 +349,6 @@ char * InsertExtensions(char *source, int *sourceLength){
     source = InsertExtension(source, sourceLength, insertPoint+1, "GL_EXT_texture_cube_map_array");
     source = InsertExtension(source, sourceLength, insertPoint+1, "GL_EXT_texture_buffer");
     source = InsertExtension(source, sourceLength, insertPoint+1, "GL_OES_texture_storage_multisample_2d_array");
-    source = InsertExtension(source, sourceLength, insertPoint + 1, "GL_OES_texture_3D");
     return source;
 }
 
