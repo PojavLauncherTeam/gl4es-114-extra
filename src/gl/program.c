@@ -790,6 +790,15 @@ void gl4es_glLinkProgram(GLuint program) {
         if(glprogram->linked) {
             fill_program(glprogram);
         } else {
+            GLsizei log_length;
+            gles_glGetProgramiv(glprogram->id, GL_INFO_LOG_LENGTH, &log_length);
+            DBG(printf("Linker error length: %i\n", log_length));
+            if(log_length != 0) {
+               LOAD_GLES2(glGetProgramInfoLog);
+               GLchar log_chars[log_length];
+               gles_glGetProgramInfoLog(glprogram->id, log_length, &log_length, log_chars);
+               printf("%s\n", log_chars);
+            }
             // should DBG the linker error?
             DBG(printf(" Link failled!\n");)
             glprogram->linked = 0;
