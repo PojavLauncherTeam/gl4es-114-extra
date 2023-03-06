@@ -28,7 +28,7 @@ jobs:
       - name: Build GL4ES
         run: |
           wget https://github.com/leetal/ios-cmake/raw/master/ios.toolchain.cmake
-          cmake -B build -DCMAKE_TOOLCHAIN_FILE=ios.toolchain.cmake -DDEFAULT_ES=2 -DNOX11=ON -DNOEGL=ON -DSTATICLIB=OFF -DPLATFORM=OS64 -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED="NO" -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED=NO -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY=""
+          cmake -B build -DCMAKE_TOOLCHAIN_FILE=ios.toolchain.cmake -DDEFAULT_ES=2 -DNOX11=ON -DNOEGL=OFF -DSTATICLIB=OFF -DPLATFORM=OS64
           cmake --build build --config RelWithDebInfo --target GL
       - name: Upload lib
         uses: actions/upload-artifact@v2

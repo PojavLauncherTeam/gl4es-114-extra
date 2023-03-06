@@ -252,7 +252,7 @@ void eye_loop_dual(const GLfloat *verts, const GLfloat *param1, const GLfloat* p
     // based on https://www.opengl.org/wiki/Mathematics_of_glTexGen
     // First get the ModelviewMatrix
     GLfloat ModelviewMatrix[16], InvModelview[16];
-    glGetFloatv(GL_MODELVIEW_MATRIX, InvModelview);
+    gl4es_glGetFloatv(GL_MODELVIEW_MATRIX, InvModelview);
     // column major -> row major
     matrix_transpose(InvModelview, ModelviewMatrix);
     // And get the inverse

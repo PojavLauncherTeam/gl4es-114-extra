@@ -78,7 +78,7 @@ void gl4es_glStencilFuncSeparate(GLenum face, GLenum func, GLint ref, GLuint mas
         return;
     }
     if(face==GL_FRONT_AND_BACK) {
-        glStencilFunc(func, ref, mask);
+        gl4es_glStencilFunc(func, ref, mask);
         return;
     }
 
@@ -132,7 +132,7 @@ void gl4es_glStencilOpSeparate(GLenum face, GLenum sfail, GLenum zfail, GLenum z
         return;
     }
     if(face==GL_FRONT_AND_BACK) {
-        glStencilOp(sfail, zfail, zpass);
+        gl4es_glStencilOp(sfail, zfail, zpass);
         return;
     }
 

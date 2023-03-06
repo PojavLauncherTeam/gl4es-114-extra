@@ -1161,7 +1161,7 @@ void gl4es_scratch_vertex(int alloc) {
     LOAD_GLES(glBindBuffer);
     LOAD_GLES(glGenBuffers);
     if(!glstate->scratch_vertex) {
-        glGenBuffers(1, &glstate->scratch_vertex);
+        gles_glGenBuffers(1, &glstate->scratch_vertex);
     }
     if(glstate->scratch_vertex_size < alloc) {
 #ifdef AMIGAOS4
@@ -1187,7 +1187,7 @@ void gl4es_scratch_indices(int alloc) {
     LOAD_GLES(glBindBuffer);
     LOAD_GLES(glGenBuffers);
     if(!glstate->scratch_indices) {
-        glGenBuffers(1, &glstate->scratch_indices);
+        gles_glGenBuffers(1, &glstate->scratch_indices);
     }
     gles_glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glstate->scratch_indices);
     if(glstate->scratch_indices_size < alloc) {

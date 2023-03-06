@@ -206,7 +206,7 @@ else()
     if(USE_CLOCK)
         target_link_libraries(GL rt)
     endif()
-    if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    if(${CMAKE_SYSTEM_NAME} MATCHES "iOS")
         target_link_libraries(GL
             "-F../../external"
             "-framework MetalANGLE"
