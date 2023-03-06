@@ -160,12 +160,99 @@ char * ConvertShaderVgpu(struct shader_s * shader_source){
 
     //printf("FUCKING UP PRECISION");
     source = ReplacePrecisionQualifiers(source, &sourceLength, shader_source->type == GL_VERTEX_SHADER);
+    
+    source = ProcessSwitchCases(source, &sourceLength);
 
     if (globals4es.vgpu_dump){
         printf("New VGPU Shader conversion:\n%s\n", source);
     }
 
     return source;
+}
+
+static const char* switch_template = " switch (%n%[^)] { ";
+static const char* case_template = " case %n%[^:] ";
+static const char* declaration_template = " const float %s = %s ;";
+
+#define VARIABLE_SIZE 1024
+#define MODE_SWITCH 0
+#define MODE_CASE 1
+
+
+/**
+ * Convert switches or cases to be usable with the current int to float conversion
+ * @param source The shader as a string
+ * @param sourceLength The shader allocated length
+ * @param mode Whether to scan and fix switches or cases
+ * @return The shader as a string, converted appropriately, maybe in a different memory location
+*/
+char* FindAndCorrect(char* source, int* length, int mode) {
+   const char*     template = mode == MODE_SWITCH ? switch_template : mode == MODE_CASE ? case_template : NULL;
+   char*           scan_source = source;
+   char            template_string[VARIABLE_SIZE];
+   size_t          string_offset;
+   size_t          offset = 0;
+   unsigned char   rewind = 0;
+   while(1) {
+      int scan_result = sscanf(scan_source, template, &string_offset, &template_string);
+      if(scan_result == 0) {
+         scan_source++;
+         continue;
+      }else if(scan_result == EOF) {
+         break;
+      }
+      offset = string_offset + (strstr(scan_source, mode == MODE_SWITCH ? "{" : mode == MODE_CASE ? ":" : 0) - scan_source); // find it by hand cause sscanf has trouble with two %n operators
+      string_offset += (scan_source - source); // convert it from relative to scan to relative to base
+      if(mode == MODE_SWITCH && !strstr(template_string, "int(") ) { // already cast to int, skip
+         size_t insert_end_offset = string_offset + strlen(template_string);
+         source = InplaceInsertByIndex(source, length, insert_end_offset, ")");
+         source = InplaceInsertByIndex(source, length, string_offset, "int(");
+         rewind = 1;
+      }
+      if(mode == MODE_CASE) {
+         if(!isdigit(template_string[0])) { // cant have a number without the first digit, and the standard doesnt permit variable names starting with numbers
+            char   decltemplate_formatted[VARIABLE_SIZE];
+            float  declared_value = 99;
+            snprintf(decltemplate_formatted, VARIABLE_SIZE, declaration_template, template_string, "%f");
+            printf("Scanning with template %s\n", decltemplate_formatted);
+            char* scanbase = source;
+            while(1) {
+               int result = sscanf(scanbase, decltemplate_formatted, &declared_value);
+               if(result == 0) {
+                  scanbase++;
+                  continue;
+               }else if(result == EOF) {
+                  printf("Scanned the whole shader and didn't find declaration for %s with template \"%s\"\n", template_string, decltemplate_formatted);
+                  abort();
+               }
+              break;
+            }
+            char   integer[VARIABLE_SIZE];
+            snprintf(integer, VARIABLE_SIZE, "%i", (int)declared_value);
+            size_t replace_end_offset = string_offset + strlen(template_string)-1;
+            source = InplaceReplaceByIndex(source, length, string_offset, replace_end_offset, integer);
+            rewind = 1;
+         }
+      }
+      if(rewind) {
+         scan_source = source; // since inplace replacement operations are destructive, the scan will be rewound after doing them
+         rewind = 0;
+      }else scan_source += offset;
+   }
+   return source;
+}
+
+/**
+ *Convert switches and cases in the shader to be usable with the current int to float coercion
+ * @param source The shader as a string
+ * @param sourceLength The shader allocated length
+ * @return The shader as a string, converted appropriately, maybe in a different memory location
+*/
+
+char* ProcessSwitchCases(char* source, int* length) {
+   source = FindAndCorrect(source, length, MODE_SWITCH);
+   source = FindAndCorrect(source, length, MODE_CASE);
+   return source;
 }
 
 /**
@@ -520,7 +607,7 @@ char * CoerceIntToFloat(char * source, int * sourceLength){
             for(int j=1; 1; ++j){
                 if(isDigit(source[i-j])) continue;
                 if(isValidFunctionName(source[i-j])) break; // Function or variable name, don't coerce
-                if(source[i-j] == '.' || ((source[i-j] == '+' || source[i-j] == '-') && source[i-j-1] == 'e')) break; // No coercion, float or scientific notation already
+                 if(source[i-j] == '.' || ((source[i-j] == '+' || source[i-j] == '-') && (source[i-j-1] == 'e'|| source[i-j-1] == 'E') )) break; // No coercion, float or scientific notation already
                 // Nothing found, should be coerced then
                 shouldBeCoerced = 1;
                 break;
